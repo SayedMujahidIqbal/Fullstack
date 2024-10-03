@@ -10,14 +10,28 @@ const Statistics = (props) => {
   const positive = good / all * 100
 
   return(
-    <div>
-      <StatisticsLine text="good" value={good} />
-      <StatisticsLine text="neutral" value={neutral} />
-      <StatisticsLine text="bad" value={bad} />
-      <StatisticsLine text="all" value={all} />
-      <StatisticsLine text="average" value={!average ? 0 : average} />
-      <StatisticsLine text="positive" value={!positive ? 0 : positive} />
-    </div>
+    <table>
+      <tbody>
+        <tr>
+          <td><StatisticsLine text="good" value={good} /></td>
+        </tr>
+        <tr>
+          <td><StatisticsLine text="neutral" value={neutral} /></td>
+        </tr>
+        <tr>
+          <td><StatisticsLine text="bad" value={bad} /></td>
+        </tr>
+        <tr>
+          <td><StatisticsLine text="all" value={all} /></td>
+        </tr>
+        <tr>
+          <td><StatisticsLine text="average" value={!average ? 0 : average} /></td>
+        </tr>
+        <tr>
+          <td><StatisticsLine text="positive" value={!positive ? 0 : positive} /></td>
+        </tr>
+      </tbody>
+    </table>
   )
 }
 
