@@ -1,6 +1,7 @@
 import { useState } from "react"
 
 function App() {
+
   const anecdotes = [
     'If it hurts, do it more often.',
     'Adding manpower to a late software project makes it later!',
@@ -11,8 +12,10 @@ function App() {
     'Programming without an extremely heavy use of console.log is same as if a doctor would refuse to use x-rays or blood tests when diagnosing patients.',
     'The only way to go fast, is to go well.'
   ]
+
   const [selected, setSelected] = useState(0)
   const [points, setPoints] = useState(Array(anecdotes.length).fill(0)) 
+  
 
   const handleClick = () => {
     if(selected === anecdotes.length -1){
@@ -27,12 +30,26 @@ function App() {
     setPoints([...points])
   }
 
+  const getAnecdotewithMaxVote = () => {
+    const maxValue = Math.max(...points)
+    const maxIndex = points.indexOf(maxValue)
+    
+    return(
+      <>
+        <p>{anecdotes[maxIndex]}</p>
+        <p>has {maxValue} votes</p>
+      </>
+    )
+  }
+
+
   return (
     <div>
-       <p>{ anecdotes[selected] }</p>
-       <p>has { points[selected] } votes</p>
-       <button onClick={() => addVote(selected)}>add vote</button>
-       <button onClick={handleClick}>Next Anecdote</button>
+      <p>{ anecdotes[selected] }</p>
+      <p>has { points[selected] } votes</p>
+      <button onClick={() => addVote(selected)}>add vote</button>
+      <button onClick={handleClick}>Next Anecdote</button>
+      {getAnecdotewithMaxVote()}
     </div>
   )
 }
