@@ -12,6 +12,7 @@ function App() {
     'The only way to go fast, is to go well.'
   ]
   const [selected, setSelected] = useState(0)
+  const [points, setPoints] = useState(Array(anecdotes.length).fill(0)) 
 
   const handleClick = () => {
     if(selected === anecdotes.length -1){
@@ -20,10 +21,17 @@ function App() {
       setSelected(selected + 1)
     }
   }
+  
+  const addVote = (selected) => {
+    points[selected] += 1
+    setPoints([...points])
+  }
 
   return (
     <div>
-       <p>{anecdotes[selected]}</p>
+       <p>{ anecdotes[selected] }</p>
+       <p>has { points[selected] } votes</p>
+       <button onClick={() => addVote(selected)}>add vote</button>
        <button onClick={handleClick}>Next Anecdote</button>
     </div>
   )
