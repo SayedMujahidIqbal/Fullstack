@@ -30,14 +30,8 @@ const Total = ({ course }) => {
   return <p><b>Total of {total} Exercise</b></p>
 }
 
-const Part = (props) => {
-  const { part, exercises } = props 
-  return(
-    <p>
-      {part} {exercises}
-    </p>
-  )
-}
+const Part = ({ part, exercises }) => { return <p>{part} {exercises}</p> } 
+
 
 function App() {
   const course = {
