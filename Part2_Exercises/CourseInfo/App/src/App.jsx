@@ -16,7 +16,7 @@ const Total = (props) => {
   let totalExercises= 0
   props.course.parts.map(part => totalExercises +=  part.exercises)
 
-  return <p>Total number of Exercise are {totalExercises}</p>
+  return <p><b>Total of {totalExercises} Exercise</b></p>
 }
 
 const Part = (props) => { 
@@ -39,6 +39,7 @@ const Course = ({course}) => {
 
 function App() {
   const course = {
+    id: 1,
     name: 'Half Stack application development',
     parts: [ 
       {
@@ -52,6 +53,10 @@ function App() {
       {
         name: 'State of a component',
         exercises: 14
+      },
+      {
+        name: 'Redux',
+        exercises: 11
       }
     ]
   }
