@@ -17,12 +17,13 @@ index.html
 package-lock.json
 README.md
 vite.config.js
-.gitignore
+
 
 # Editor directories and files
 .vscode/*
 !.vscode/extensions.json
 .idea
+.gitignore
 .DS_Store
 *.suo
 *.ntvs*
