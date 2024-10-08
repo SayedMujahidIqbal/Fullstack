@@ -1,32 +1,4 @@
-const Course = ({ courses }) => {
-  return(
-    <div>
-        <h1>Web Development Curriculum</h1>
-        {
-          courses.map(course => 
-            <div key={course.id}>
-              <Header course={course} />
-              <Content course={course} />
-              <Total course={course} />
-            </div>
-          )
-        }
-    </div>
-  )
-}
-
-const Header = ({ course }) => <h2>{course.name}</h2>
-
-const Content = ({ course }) => course.parts.map(part => <Part key={part.id} part={part.name} exercises={part.exercises} />)
-
-const Total = ({ course }) => {
-  const total = course.parts.reduce((prevExercises, currExercises) => {
-    return prevExercises + currExercises.exercises
-  }, 0)
-  return <p><b>Total of {total} Exercises</b></p>
-}
-
-const Part = ({ part, exercises }) => { return <p>{part} {exercises}</p> } 
+import Course from "./components/Course"
 
 
 function App() {
