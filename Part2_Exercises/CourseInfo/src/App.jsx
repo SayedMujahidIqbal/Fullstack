@@ -1,42 +1,29 @@
 const Course = ({ courses }) => {
   return(
     <div>
-        <Header courses={courses} />
-        <Content courses={courses} />
-        <Total courses={courses} />
+        <h1>Web Development Curriculum</h1>
+        {
+          courses.map(course => 
+            <div key={course.id}>
+              <Header course={course} />
+              <Content course={course} />
+              <Total course={course} />
+            </div>
+          )
+        }
     </div>
   )
 }
 
-const Header = ({ courses }) => {
-  return(
-    <h1>
-      {courses.map(course => <p key={course.id}>{course.name}</p>)}
-    </h1>
-  )
-}
+const Header = ({ course }) => <h2>{course.name}</h2>
 
-const Content = ({ courses }) =>{
-  return(
-    courses.map(course => course.parts.map(part => <Part key={part.id} part={part.name} exercises={part.exercises} />))
-  )
-}
+const Content = ({ course }) => course.parts.map(part => <Part key={part.id} part={part.name} exercises={part.exercises} />)
 
-const Total = ({ courses }) => {
-  let partOneExer = 0
-  let partTwoExer = 0
-  const total = courses.map(course => course.parts.reduce((prevExercises, currExercises) => {
-    console.log(prevExercises, currExercises.exercises)
-    if(course.id === 1){
-      partOneExer = prevExercises + currExercises.exercises
-    }else{
-      partTwoExer = prevExercises + currExercises.exercises
-    }
-    console.log(partOneExer, partTwoExer)
-    return partOneExer + partTwoExer
-  }, 0))
-
-  return <p><b>Total of {partOneExer + partTwoExer} Exercise</b></p>
+const Total = ({ course }) => {
+  const total = course.parts.reduce((prevExercises, currExercises) => {
+    return prevExercises + currExercises.exercises
+  }, 0)
+  return <p><b>Total of {total} Exercises</b></p>
 }
 
 const Part = ({ part, exercises }) => { return <p>{part} {exercises}</p> } 
