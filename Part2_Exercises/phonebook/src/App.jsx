@@ -9,7 +9,8 @@ function App() {
   ])
   const [newName, setNewName] = useState('set new name')
   const [newPhoneNumber, setNewPhoneNumber] = useState('Type your number here')
-  const [personName, setPersonName] = useState([])
+  const [searchName, setSearchName] = useState('')
+  const [filteredPersons, setFilteredPersons] = useState(persons)
 
   const addNewName = (event) => {
     setNewName(event.target.value)
@@ -38,13 +39,14 @@ function App() {
     )
   }
 
-  const searchName = (event) => {
-    setPersonName(personName.concat(event.target.value))
-    console.log("Person charcater", personName)
-    const nameLowerCased = personName.map(personName => personName.toLocaleLowerCase())
-    const searchedPersons = persons.filter(person => person.name.toLocaleLowerCase().startsWith(nameLowerCased))
-    //setPersons(searchedPerson)
-    console.log("Searched persons are", searchedPersons)
+  const handleSearch = (event) => {
+    const searchTerm = event.target.value
+    setSearchName(searchTerm)
+
+    const filteredNames = persons.filter((person) =>
+      person.name.toLowerCase().startsWith(searchTerm.toLowerCase())
+    )
+    setFilteredPersons(filteredNames)
   }
   
   return (
@@ -52,7 +54,7 @@ function App() {
       <h2>Phonebook</h2>
       <div>
         <p>Filter shown with</p>
-        <input onChange={searchName} value={personName} />
+        <input onChange={handleSearch} value={searchName} />
       </div>
       <form onSubmit={addPerson}>
         <div>
@@ -70,7 +72,7 @@ function App() {
       </form>
       <h2>numbers</h2>
       <ul>
-      {persons.map(person => <li key={person.name}>{person.name}{person.phoneNumber}</li>)}
+      {filteredPersons.map(person => <li key={person.name}>{person.name}{person.phoneNumber}</li>)}
       </ul>
     </div>
   )
