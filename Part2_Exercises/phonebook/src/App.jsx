@@ -35,7 +35,7 @@ const App = () => {
       number: newPhoneNumber,
     }
 
-    const personAlreadyAdded = persons.find(person => person.name === personObject.name)
+    const personAlreadyAdded = persons.find(person => person.name.toLowerCase() === personObject.name.toLowerCase())
 
     personAlreadyAdded ? (
       alert(`${personObject.name} with same phone number is already added to the phonebook, replace the old number with a new one`),
