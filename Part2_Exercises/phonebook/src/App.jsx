@@ -3,6 +3,7 @@ import Filter from "./components/Filter"
 import PersonForm from "./components/PersonForm"
 import Persons from "./components/Persons"
 import personService from './services/persons'
+import Notification from "./components/Notification"
 
 const App = () => {
   const [persons, setPersons] = useState([])
@@ -10,6 +11,7 @@ const App = () => {
   const [newPhoneNumber, setNewPhoneNumber] = useState('')
   const [searchName, setSearchName] = useState('')
   const [filteredPersons, setFilteredPersons] = useState([])
+  const [message, setMessage] = useState({ success: '', error: '' })
 
 
   useEffect(() => {
@@ -41,6 +43,10 @@ const App = () => {
       alert(`${personObject.name} with same phone number is already added to the phonebook, replace the old number with a new one`),
       personService.update(personAlreadyAdded.id, personObject)
       .then(updatedPerson => {
+        setMessage({ success: `${returnedPerson.name} number updated successfully` })
+        setTimeout(() => {
+          setMessage({ success: '' })
+        }, 5000)
         setPersons(persons.map(person => person.id === updatedPerson.id ? updatedPerson : person))
         setFilteredPersons(filteredPersons.map(person => person.id === updatedPerson.id ? updatedPerson : person))
         setNewName(''),
@@ -50,6 +56,10 @@ const App = () => {
     (
       personService.create(personObject)
       .then(returnedPerson => {
+        setMessage({ success: `${returnedPerson.name} added successfully` })
+        setTimeout(() => {
+          setMessage({ success: '' })
+        }, 5000)
         setPersons(persons.concat(returnedPerson))
         setFilteredPersons(filteredPersons.concat(returnedPerson))
         setNewName(''),
@@ -73,18 +83,29 @@ const App = () => {
     alert(`Delete ${personToBedeleted.name}`)
     personService.deletePerson(id)
     .then(deletedPerson => {
-      console.log(deletedPerson)
+      setMessage({ success: `${deletedPerson.name} deleted successfully` })
+        setTimeout(() => {
+          setMessage({ success: '' })
+        }, 5000)
       personService.getAll()
       .then(updatedPersonsList => {
         setPersons(updatedPersonsList)
         setFilteredPersons(updatedPersonsList)
       })
+    }).catch(error => {
+      setMessage({ error: `${personToBedeleted.name} has already been removed from the server`})
+      setTimeout(() => {
+        setMessage({ success: '' })
+      }, 5000)
     })
   }
   
   return (
     <div>
       <h2>Phonebook</h2>
+      <Notification 
+        message={message}
+      />
       <Filter
         handleSearch={handleSearch}
         searchName={searchName}
