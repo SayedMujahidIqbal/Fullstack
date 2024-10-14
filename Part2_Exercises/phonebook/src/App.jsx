@@ -32,21 +32,28 @@ const App = () => {
     event.preventDefault()
     const personObject = {
       name: newName,
-      phoneNumber: newPhoneNumber,
+      number: newPhoneNumber,
     }
 
-    const personExist = persons.filter(person => { return (person.name === personObject.name && person.phoneNumber === personObject.phoneNumber)})
+    const personAlreadyAdded = persons.find(person => person.name === personObject.name)
 
-    personExist.length ? (
-      alert(`${personObject.name} with same phone number is already added to the phonebook`),
-      setNewName(''),
-      setNewPhoneNumber('')
+    personAlreadyAdded ? (
+      alert(`${personObject.name} with same phone number is already added to the phonebook, replace the old number with a new one`),
+      personService.update(personAlreadyAdded.id, personObject)
+      .then(updatedPerson => {
+        setPersons(persons.map(person => person.id === updatedPerson.id ? updatedPerson : person))
+        setFilteredPersons(filteredPersons.map(person => person.id === updatedPerson.id ? updatedPerson : person))
+        setNewName(''),
+        setNewPhoneNumber('')
+      })
     ) :
     (
       personService.create(personObject)
       .then(returnedPerson => {
         setPersons(persons.concat(returnedPerson))
         setFilteredPersons(filteredPersons.concat(returnedPerson))
+        setNewName(''),
+        setNewPhoneNumber('')
       })
     )
   }
@@ -59,6 +66,20 @@ const App = () => {
       person.name.toLowerCase().startsWith(searchTerm.toLowerCase())
     )
     setFilteredPersons(filteredNames)
+  }
+
+  const deletePerson = (id) => {
+    const personToBedeleted = persons.find(person => person.id === id)
+    alert(`Delete ${personToBedeleted.name}`)
+    personService.deletePerson(id)
+    .then(deletedPerson => {
+      console.log(deletedPerson)
+      personService.getAll()
+      .then(updatedPersonsList => {
+        setPersons(updatedPersonsList)
+        setFilteredPersons(updatedPersonsList)
+      })
+    })
   }
   
   return (
@@ -78,7 +99,8 @@ const App = () => {
       />
       <h2>numbers</h2>
       <Persons 
-        filteredPersons={filteredPersons} 
+        filteredPersons={filteredPersons}
+        deletePerson={deletePerson} 
       />
     </div>
   )
