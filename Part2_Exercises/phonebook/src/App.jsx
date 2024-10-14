@@ -2,7 +2,7 @@ import { useEffect, useState } from "react"
 import Filter from "./components/Filter"
 import PersonForm from "./components/PersonForm"
 import Persons from "./components/Persons"
-import axios from "axios"
+import personService from './services/persons'
 
 const App = () => {
   const [persons, setPersons] = useState([])
@@ -13,10 +13,10 @@ const App = () => {
 
 
   useEffect(() => {
-    axios.get('http://localhost:3001/persons').then(response => {
-      const personsList = response.data
-      setPersons(personsList)
-      setFilteredPersons(personsList)
+    personService.getAll()
+    .then(initialPersonsList => {
+      setPersons(initialPersonsList)
+      setFilteredPersons(initialPersonsList)
     })
   }, [])
 
@@ -33,7 +33,6 @@ const App = () => {
     const personObject = {
       name: newName,
       phoneNumber: newPhoneNumber,
-      id: Math.random() * 5
     }
 
     const personExist = persons.filter(person => { return (person.name === personObject.name && person.phoneNumber === personObject.phoneNumber)})
@@ -44,10 +43,11 @@ const App = () => {
       setNewPhoneNumber('')
     ) :
     (
-      setPersons(persons.concat(personObject)),
-      setFilteredPersons([...persons, personObject]),
-      setNewName(''),
-      setNewPhoneNumber('')
+      personService.create(personObject)
+      .then(returnedPerson => {
+        setPersons(persons.concat(returnedPerson))
+        setFilteredPersons(filteredPersons.concat(returnedPerson))
+      })
     )
   }
 
