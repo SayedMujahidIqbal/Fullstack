@@ -43,7 +43,7 @@ const App = () => {
       alert(`${personObject.name} with same phone number is already added to the phonebook, replace the old number with a new one`),
       personService.update(personAlreadyAdded.id, personObject)
       .then(updatedPerson => {
-        setMessage({ success: `${returnedPerson.name} number updated successfully` })
+        setMessage({ success: `${updatedPerson.name} number updated successfully` })
         setTimeout(() => {
           setMessage({ success: '' })
         }, 5000)
@@ -51,6 +51,13 @@ const App = () => {
         setFilteredPersons(filteredPersons.map(person => person.id === updatedPerson.id ? updatedPerson : person))
         setNewName(''),
         setNewPhoneNumber('')
+      }).catch(error => {
+        setMessage(
+          `Note ${personAlreadyAdded.name} was already removed from server`
+        )
+        setTimeout(() => {
+          setMessage({error: ''})
+        }, 5000)
       })
     ) :
     (
