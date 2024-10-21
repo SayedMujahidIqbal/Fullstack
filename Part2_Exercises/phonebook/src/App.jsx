@@ -52,9 +52,7 @@ const App = () => {
         setNewName(''),
         setNewPhoneNumber('')
       }).catch(error => {
-        setMessage(
-          `Note ${personAlreadyAdded.name} was already removed from server`
-        )
+        setMessage({ error: error.response.data.error })
         setTimeout(() => {
           setMessage({error: ''})
         }, 5000)
@@ -62,15 +60,20 @@ const App = () => {
     ) :
     (
       personService.create(personObject)
-      .then(returnedPerson => {
-        setMessage({ success: `${returnedPerson.name} added successfully` })
+      .then(createdPerson => {
+        setMessage({ success: `${createdPerson.name} added successfully` })
         setTimeout(() => {
           setMessage({ success: '' })
         }, 5000)
-        setPersons(persons.concat(returnedPerson))
-        setFilteredPersons(filteredPersons.concat(returnedPerson))
+        setPersons(persons.concat(createdPerson))
+        setFilteredPersons(filteredPersons.concat(createdPerson))
         setNewName(''),
         setNewPhoneNumber('')
+      }).catch(error => {
+        setMessage({ error: error.response.data.error })
+        setTimeout(() => {
+          setMessage({error: ''})
+        }, 5000)
       })
     )
   }
@@ -89,8 +92,8 @@ const App = () => {
     const personToBedeleted = persons.find(person => person.id === id)
     alert(`Delete ${personToBedeleted.name}`)
     personService.deletePerson(id)
-    .then(deletedPerson => {
-      setMessage({ success: `${deletedPerson.name} deleted successfully` })
+    .then(response => {
+      setMessage({ success: `${personToBedeleted.name} deleted successfully` })
         setTimeout(() => {
           setMessage({ success: '' })
         }, 5000)
@@ -100,9 +103,9 @@ const App = () => {
         setFilteredPersons(updatedPersonsList)
       })
     }).catch(error => {
-      setMessage({ error: `${personToBedeleted.name} has already been removed from the server`})
+      setMessage({ error: error.response.data.error })
       setTimeout(() => {
-        setMessage({ success: '' })
+        setMessage({ error: '' })
       }, 5000)
     })
   }
