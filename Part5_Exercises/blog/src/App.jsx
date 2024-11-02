@@ -6,7 +6,7 @@ import Notification from './components/Notification'
 
 const App = () => {
   const [blogs, setBlogs] = useState([])
-  const [message, setMessage] = useState({ error: null, success: null })
+  const [message, setMessage] = useState({ error: '', success: '' })
   const [username, setUsername] = useState('')
   const [password, setPassword] = useState('')
   const [user, setUser] = useState(null)
@@ -38,14 +38,14 @@ const App = () => {
       setUser(user)
       setUsername('')
       setPassword('')
-      setMessage({ ...message, success: `${user.name} Loggedin successfully` })
+      setMessage({ success: `${user.name} Loggedin successfully` })
       setTimeout(() => {
-        setMessage({...message, success: null})
+        setMessage({ success: ''})
       }, 5000)
     } catch (error) {
-        setMessage({ ...message, error: 'Wrong credentials' })
+        setMessage({ error: 'Wrong credentials' })
         setTimeout(() => {
-          setMessage({...message, error: null})
+          setMessage({ error: ''})
         }, 5000)
     }
   }
