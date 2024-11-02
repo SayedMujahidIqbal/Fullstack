@@ -38,7 +38,7 @@ const App = () => {
       setUser(user)
       setUsername('')
       setPassword('')
-      setMessage({ success: `${user.name} Loggedin successfully` })
+      setMessage({ success: `${user.name} Logged-in successfully` })
       setTimeout(() => {
         setMessage({ success: ''})
       }, 5000)
@@ -48,6 +48,15 @@ const App = () => {
           setMessage({ error: ''})
         }, 5000)
     }
+  }
+
+  const handleLogout = () => {
+    window.localStorage.removeItem('loggedBlogappUser')
+    setMessage({ success: `${user.name} logged-out successfully` })
+    setTimeout(() => {
+      setMessage({ success: '' })
+    }, 5000)
+    setUser(null)
   }
 
   const loginForm = () => (
@@ -77,7 +86,9 @@ const App = () => {
       {
         user === null 
         ? loginForm()
-        :<div><p>{user.name} logged-in</p></div>
+        :<div>
+            <p>{user.name} logged-in <button onClick={handleLogout}>logout</button> </p>
+          </div>
 
       }
       {blogs.map(blog =>
