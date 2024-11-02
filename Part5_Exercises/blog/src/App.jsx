@@ -9,6 +9,9 @@ const App = () => {
   const [message, setMessage] = useState({ error: '', success: '' })
   const [username, setUsername] = useState('')
   const [password, setPassword] = useState('')
+  const [title, setTitle] = useState('')
+  const [author, setAuthor] = useState('')
+  const [url, setURL] = useState('')
   const [user, setUser] = useState(null)
 
   useEffect(() => {
@@ -59,6 +62,10 @@ const App = () => {
     setUser(null)
   }
 
+  const addBlog = (event) => {
+    
+  }
+
   const loginForm = () => (
     <form onSubmit={handleLogin}>
       <div>
@@ -79,6 +86,36 @@ const App = () => {
     </form>
   )
 
+  const blogForm = () => (
+    <form onSubmit={addBlog}>
+      <div>
+        title:
+        <input 
+          type="text" 
+          name="title"
+          onChange={({ target }) => setTitle(target.value)}  
+        />
+      </div>
+      <div>
+        Author:
+        <input 
+          type="text" 
+          name="author"
+          onChange={({ target }) => setAuthor(target.value)}  
+        />
+      </div>
+      <div>
+        URL:
+        <input 
+          type="text" 
+          name="url"
+          onChange={({ target }) => setURL(target.value)}  
+        />
+      </div>
+      <button type='submit'>login</button>
+    </form>
+  )
+
   return (
     <div>
       <h2>blogs</h2>
@@ -88,6 +125,7 @@ const App = () => {
         ? loginForm()
         :<div>
             <p>{user.name} logged-in <button onClick={handleLogout}>logout</button> </p>
+            {blogForm()}
           </div>
 
       }
