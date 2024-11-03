@@ -3,6 +3,8 @@ import Blog from './components/Blog'
 import blogService from './services/blogs'
 import loginService from './services/login'
 import Notification from './components/Notification'
+import Togglable from './components/Togglable'
+import BlogForm from './components/BlogForm'
 
 const App = () => {
   const [blogs, setBlogs] = useState([])
@@ -110,35 +112,22 @@ const App = () => {
     </form>
   )
 
-  const blogForm = () => (
-    <form onSubmit={addBlog}>
-      <div>
-        title:
-        <input 
-          type="text" 
-          name="title"
-          onChange={({ target }) => setTitle(target.value)}  
+  const blogForm = () => {
+    return(
+      <Togglable buttonLabel="new blog">
+        <BlogForm
+          handleSubmit={addBlog}
+          title={title}
+          author={author}
+          url={url}
+          handleTitleChange={({ target }) => setTitle(target.value)}
+          handleAuthorChange={({ target }) => setAuthor(target.value)}
+          handleURLChange={({ target }) => setURL(target.value)}
         />
-      </div>
-      <div>
-        Author:
-        <input 
-          type="text" 
-          name="author"
-          onChange={({ target }) => setAuthor(target.value)}  
-        />
-      </div>
-      <div>
-        URL:
-        <input 
-          type="text" 
-          name="url"
-          onChange={({ target }) => setURL(target.value)}  
-        />
-      </div>
-      <button type='submit'>Add Blog</button>
-    </form>
-  )
+      </Togglable>
+    )
+  }
+
 
   return (
     <div>
