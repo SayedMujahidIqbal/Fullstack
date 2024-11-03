@@ -1,7 +1,43 @@
-const Blog = ({ blog }) => (
-  <div>
-    {blog.title} {blog.author}
-  </div>  
-)
+import { useState } from "react"
+import Togglable from "./Togglable"
+
+const Blog = ({ blog }) => {
+  const [visible, setVisible] = useState(false)
+  const blogStyle = {
+    paddingTop: 10,
+    paddingLeft: 2,
+    border: 'solid',
+    borderWidth: 1,
+    marginBottom: 5
+  }
+
+  const toggleVisibility = () => {
+    setVisible(!visible)
+  }
+
+ return( 
+  <div style={blogStyle}>
+      <div style={{ display: "flex" }}>
+        <div style={{ paddingRight: 4 }}>
+          {blog.title}
+        </div>
+        <div>
+          <button onClick={toggleVisibility}>{visible ? 'hide' : 'view'}</button>
+        </div>
+      </div>
+      <div style={{ display: visible ? '' : 'none' }}>
+        <div>
+          {blog.author}
+        </div>
+        <div>
+          {blog.url}
+        </div>
+        <div>
+          {blog.likes} <button>like</button>
+        </div>
+      </div>
+  </div>
+ )  
+}
 
 export default Blog
