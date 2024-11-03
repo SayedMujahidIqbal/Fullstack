@@ -11,9 +11,6 @@ const App = () => {
   const [message, setMessage] = useState({ error: '', success: '' })
   const [username, setUsername] = useState('')
   const [password, setPassword] = useState('')
-  const [title, setTitle] = useState('')
-  const [author, setAuthor] = useState('')
-  const [url, setURL] = useState('')
   const [user, setUser] = useState(null)
 
   useEffect(() => {
@@ -64,32 +61,15 @@ const App = () => {
     setUser(null)
   }
 
-  const addBlog = async (event) => {
-    event.preventDefault()
-    if(title=== '' || author === '' || url === ''){
-      setMessage({ error: 'Blog fields cannot be empty' })
-      setTimeout(() =>{
-        setMessage({ error: '' })
-      }, 3000)
-    } else {
-      const newBlog = ({
-        title: title,
-        author: author,
-        url: url
-      })
-  
-     const createdBlog = await blogService.createBlog(newBlog)
+  const addBlog = async (blogObject) => {
+     const createdBlog = await blogService.createBlog(blogObject)
      if(createdBlog){
         setBlogs(blogs.concat(createdBlog))
-        setTitle('')
-        setAuthor('')
-        setURL('')
         setMessage({ success: `A new blog  ${createdBlog.title} by ${createdBlog.author} added` })
         setTimeout(() => {
           setMessage({ success: '' })
         }, 3000)
       }
-    }
   }
 
   const loginForm = () => (
@@ -116,13 +96,7 @@ const App = () => {
     return(
       <Togglable buttonLabel="new blog">
         <BlogForm
-          handleSubmit={addBlog}
-          title={title}
-          author={author}
-          url={url}
-          handleTitleChange={({ target }) => setTitle(target.value)}
-          handleAuthorChange={({ target }) => setAuthor(target.value)}
-          handleURLChange={({ target }) => setURL(target.value)}
+          createBlog={addBlog}
         />
       </Togglable>
     )
