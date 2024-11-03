@@ -62,8 +62,23 @@ const App = () => {
     setUser(null)
   }
 
-  const addBlog = (event) => {
+  const addBlog = async (event) => {
+    event.preventDefault()
+    const newBlog = ({
+      title: title,
+      author: author,
+      url: url
+    })
     
+   const createdBlog = await blogService.createBlog(newBlog)
+   setBlogs(blogs.concat(createdBlog))
+   setTitle('')
+   setAuthor('')
+   setURL('')
+   setMessage({ success: 'Blog created successfully' })
+   setTimeout(() => {
+      setMessage({ success: '' })
+   }, 5000)
   }
 
   const loginForm = () => (
@@ -112,7 +127,7 @@ const App = () => {
           onChange={({ target }) => setURL(target.value)}  
         />
       </div>
-      <button type='submit'>login</button>
+      <button type='submit'>Add Blog</button>
     </form>
   )
 
