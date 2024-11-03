@@ -44,12 +44,12 @@ const App = () => {
       setMessage({ success: `${user.name} Logged-in successfully` })
       setTimeout(() => {
         setMessage({ success: ''})
-      }, 5000)
+      }, 3000)
     } catch (error) {
         setMessage({ error: 'Wrong credentials' })
         setTimeout(() => {
           setMessage({ error: ''})
-        }, 5000)
+        }, 3000)
     }
   }
 
@@ -58,27 +58,36 @@ const App = () => {
     setMessage({ success: `${user.name} logged-out successfully` })
     setTimeout(() => {
       setMessage({ success: '' })
-    }, 5000)
+    }, 3000)
     setUser(null)
   }
 
   const addBlog = async (event) => {
     event.preventDefault()
-    const newBlog = ({
-      title: title,
-      author: author,
-      url: url
-    })
-    
-   const createdBlog = await blogService.createBlog(newBlog)
-   setBlogs(blogs.concat(createdBlog))
-   setTitle('')
-   setAuthor('')
-   setURL('')
-   setMessage({ success: 'Blog created successfully' })
-   setTimeout(() => {
-      setMessage({ success: '' })
-   }, 5000)
+    if(title=== '' || author === '' || url === ''){
+      setMessage({ error: 'Blog fields cannot be empty' })
+      setTimeout(() =>{
+        setMessage({ error: '' })
+      }, 3000)
+    } else {
+      const newBlog = ({
+        title: title,
+        author: author,
+        url: url
+      })
+  
+     const createdBlog = await blogService.createBlog(newBlog)
+     if(createdBlog){
+        setBlogs(blogs.concat(createdBlog))
+        setTitle('')
+        setAuthor('')
+        setURL('')
+        setMessage({ success: `A new blog  ${createdBlog.title} by ${createdBlog.author} added` })
+        setTimeout(() => {
+          setMessage({ success: '' })
+        }, 3000)
+      }
+    }
   }
 
   const loginForm = () => (
@@ -150,5 +159,6 @@ const App = () => {
     </div>
   )
 }
+
 
 export default App
