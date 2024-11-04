@@ -1,5 +1,6 @@
 import { useState } from "react"
 import blogServices from '../services/blogs'
+import BlogDetails from "./BlogDetails"
 
 const Blog = ({ blog, updateLikes }) => {
   const [visible, setVisible] = useState(false)
@@ -17,25 +18,19 @@ const Blog = ({ blog, updateLikes }) => {
 
  return( 
   <div style={blogStyle}>
-      <div style={{ display: "flex" }}>
-        <div style={{ paddingRight: 4 }}>
-          {blog.title}
-        </div>
-        <div>
-          <button onClick={toggleVisibility}>{visible ? 'hide' : 'view'}</button>
-        </div>
+    <div style={{ display: "flex" }}>
+      <div style={{ paddingRight: 4 }}>
+        {blog.title}
       </div>
-      <div style={{ display: visible ? '' : 'none' }}>
-        <div>
-          {blog.author}
-        </div>
-        <div>
-          {blog.url}
-        </div>
-        <div>
-          {blog.likes} <button onClick={() => updateLikes(blog.id)}>like</button>
-        </div>
+      <div>
+        <button onClick={toggleVisibility}>{visible ? 'hide' : 'view'}</button>
       </div>
+    </div>
+    <BlogDetails 
+      blog={blog} 
+      visible={visible} 
+      updateLikes={updateLikes} 
+    />
   </div>
  )  
 }
