@@ -81,6 +81,24 @@ const App = () => {
     setBlogs(blogs.map(blog => blog.id === id ? resultantBlog : blog))
   }
 
+  const deleteBlog = async (id) => {
+    const blog = blogs.find(b => b.id === id)
+    alert(`Remove blog ${blog.title} by ${blog.author}`)
+    try {
+      await blogService.deleteBlog(id)
+      setBlogs(blogs.filter(b => b.id !== id))
+      setMessage({ success: `${blog.title} by ${blog.author} removed` })
+      setTimeout(() => {
+        setMessage({ success: '' })
+      }, 3000) 
+    } catch (error) {
+      setMessage({ error: 'You are not authorized to delete this blog' })
+      setTimeout(() => {
+        setMessage({ error: '' })
+      }, 3000) 
+    }
+  }
+
   const loginForm = () => (
     <form onSubmit={handleLogin}>
       <div>
@@ -126,7 +144,12 @@ const App = () => {
 
       }
       {blogs.map(blog =>
-          <Blog key={blog.id} blog={blog} updateLikes={handleLikes} />
+          <Blog 
+            key={blog.id} 
+            blog={blog} 
+            updateLikes={handleLikes}
+            deleteBlog={deleteBlog} 
+          />
       )}
     </div>
   )

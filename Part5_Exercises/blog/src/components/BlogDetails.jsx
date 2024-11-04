@@ -1,6 +1,6 @@
 import React from 'react'
 
-const BlogDetails = ({ blog, visible, updateLikes }) => {
+const BlogDetails = ({ blog, visible, updateLikes, deleteBlog }) => {
   return (
     <div style={{ display: visible ? '' : 'none' }}>
         <div>
@@ -11,6 +11,9 @@ const BlogDetails = ({ blog, visible, updateLikes }) => {
         </div>
         <div>
             Likes {blog.likes} <button onClick={() => updateLikes(blog.id)}>like</button>
+        </div>
+        <div style={{ padding: 3 }}>
+            <button style={{ borderRadius:5, background: 'lightBlue' }} onClick={() => deleteBlog(blog.id)}>remove</button>
         </div>
     </div>
   )

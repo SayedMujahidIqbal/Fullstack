@@ -2,7 +2,7 @@ import { useState } from "react"
 import blogServices from '../services/blogs'
 import BlogDetails from "./BlogDetails"
 
-const Blog = ({ blog, updateLikes }) => {
+const Blog = ({ blog, updateLikes, deleteBlog }) => {
   const [visible, setVisible] = useState(false)
   const blogStyle = {
     paddingTop: 10,
@@ -30,6 +30,7 @@ const Blog = ({ blog, updateLikes }) => {
       blog={blog} 
       visible={visible} 
       updateLikes={updateLikes} 
+      deleteBlog={deleteBlog}
     />
   </div>
  )  
