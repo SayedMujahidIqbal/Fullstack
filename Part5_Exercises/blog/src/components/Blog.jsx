@@ -1,7 +1,7 @@
 import { useState } from "react"
-import Togglable from "./Togglable"
+import blogServices from '../services/blogs'
 
-const Blog = ({ blog }) => {
+const Blog = ({ blog, updateLikes }) => {
   const [visible, setVisible] = useState(false)
   const blogStyle = {
     paddingTop: 10,
@@ -33,7 +33,7 @@ const Blog = ({ blog }) => {
           {blog.url}
         </div>
         <div>
-          {blog.likes} <button>like</button>
+          {blog.likes} <button onClick={() => updateLikes(blog.id)}>like</button>
         </div>
       </div>
   </div>

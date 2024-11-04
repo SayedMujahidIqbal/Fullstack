@@ -72,6 +72,13 @@ const App = () => {
       }
   }
 
+  const handleLikes = async (id) => {
+    const blog = blogs.find(b => b.id === id)
+    const updatedBlog = { ...blog, likes: blog.likes + 1 }   
+    const resultantBlog = await blogService.updatedBlog(id, updatedBlog)
+    setBlogs(blogs.map(blog => blog.id === id ? resultantBlog : blog))
+  }
+
   const loginForm = () => (
     <form onSubmit={handleLogin}>
       <div>
@@ -117,7 +124,7 @@ const App = () => {
 
       }
       {blogs.map(blog =>
-          <Blog key={blog.id} blog={blog} />
+          <Blog key={blog.id} blog={blog} updateLikes={handleLikes} />
       )}
     </div>
   )
