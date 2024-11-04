@@ -1,6 +1,6 @@
 import { useState } from "react"
-import blogServices from '../services/blogs'
 import BlogDetails from "./BlogDetails"
+import PropTypes from "prop-types"
 
 const Blog = ({ blog, updateLikes, deleteBlog }) => {
   const [visible, setVisible] = useState(false)
@@ -34,6 +34,12 @@ const Blog = ({ blog, updateLikes, deleteBlog }) => {
     />
   </div>
  )  
+}
+
+Blog.propTypes= {
+  blog: PropTypes.object.isRequired,
+  updateLikes: PropTypes.func.isRequired,
+  deleteBlog: PropTypes.func.isRequired
 }
 
 export default Blog

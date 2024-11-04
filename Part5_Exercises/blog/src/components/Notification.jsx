@@ -1,3 +1,4 @@
+import PropTypes from 'prop-types'
 import React from 'react'
 
 const Notification = ({ message }) => {
@@ -8,6 +9,10 @@ const Notification = ({ message }) => {
       { success ? success : error }
     </div>
   )
+}
+
+Notification.propTypes = {
+  message: PropTypes.object.isRequired
 }
 
 export default Notification
