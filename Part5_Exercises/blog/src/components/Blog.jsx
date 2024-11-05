@@ -1,5 +1,4 @@
 import { useState } from "react"
-import BlogDetails from "./BlogDetails"
 import PropTypes from "prop-types"
 
 const Blog = ({ blog, updateLikes, deleteBlog }) => {
@@ -19,19 +18,27 @@ const Blog = ({ blog, updateLikes, deleteBlog }) => {
  return( 
   <div style={blogStyle}>
     <div style={{ display: "flex" }}>
-      <div style={{ paddingRight: 4 }}>
+      <div style={{ paddingRight: 4 }} className="title">
         {blog.title}
       </div>
       <div>
         <button onClick={toggleVisibility}>{visible ? 'hide' : 'view'}</button>
       </div>
     </div>
-    <BlogDetails 
-      blog={blog} 
-      visible={visible} 
-      updateLikes={updateLikes} 
-      deleteBlog={deleteBlog}
-    />
+    <div style={{ display: visible ? '' : 'none' }}>
+        <div className='url' style={{ display: 'none' }}>
+            {blog.url}
+        </div>
+        <div className='author'>
+            {blog.author}
+        </div>
+        <div className='likes' style={{ display: 'none' }}>
+            Likes {blog.likes} <button onClick={() => updateLikes(blog.id)}>like</button>
+        </div>
+        <div style={{ padding: 3 }}>
+            <button style={{ borderRadius:5, background: 'lightBlue' }} onClick={() => deleteBlog(blog.id)}>remove</button>
+        </div>
+    </div>
   </div>
  )  
 }
