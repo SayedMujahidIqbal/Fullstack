@@ -9,8 +9,9 @@ test('render blog title and author only', () => {
         url: 'https://mujiblogs.com/myblog.html',
         likes: '2'
     }
-    const mockHandler = vi.fn()
-    const { container } = render(<Blog blog={blog} updateLikes={mockHandler} deleteBlog={mockHandler} />)
+    const updateLikes = vi.fn()
+    const deleteBlog = vi.fn()
+    const { container } = render(<Blog blog={blog} updateLikes={updateLikes} deleteBlog={deleteBlog} />)
     const title = container.querySelector('.title')
     const author = container.querySelector('.author')
     const detailsDiv = container.querySelector('.details')
@@ -27,8 +28,9 @@ test('show url and number of likes on view button click', () => {
         url: 'https://mujiblogs.com/myblog.html',
         likes: '2'
     }
-    const mockHandler = vi.fn()
-    const { container } = render(<Blog blog={blog} updateLikes={mockHandler} deleteBlog={mockHandler} />)
+    const updateLikes = vi.fn()
+    const deleteBlog = vi.fn()
+    const { container } = render(<Blog blog={blog} updateLikes={updateLikes} deleteBlog={deleteBlog} />)
     const user = userEvent.setup()
     const showDetailsButton = screen.getByText('view')
     user.click(showDetailsButton)
@@ -43,10 +45,11 @@ test('test like button clicked twice received event handler prop twice', async (
         url: 'https://mujiblogs.com/myblog.html',
         likes: '2'
     }
-    const mockHandler = vi.fn()
-    render(<Blog blog={blog} updateLikes={mockHandler} deleteBlog={mockHandler} />)
+    const updateLikes = vi.fn()
+    const deleteBlog = vi.fn()
+    render(<Blog blog={blog} updateLikes={updateLikes} deleteBlog={deleteBlog} />)
     const user = userEvent.setup()
     const likeButton = screen.getByText('like')
     await user.dblClick(likeButton)
-    expect(mockHandler.mock.calls).toHaveLength(2)
+    expect(updateLikes.mock.calls).toHaveLength(2)
 })
