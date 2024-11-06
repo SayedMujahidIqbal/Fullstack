@@ -15,24 +15,28 @@ const Blog = ({ blog, updateLikes, deleteBlog }) => {
     setVisible(!visible)
   }
 
+  const showWhenVisible = { display: visible ? '' : 'none' }
+
  return( 
   <div style={blogStyle}>
     <div style={{ display: "flex" }}>
-      <div style={{ paddingRight: 4 }} className="title">
-        {blog.title}
+      <div style={{ display: 'block' }}>
+        <div style={{ paddingRight: 4 }} className="title">
+          {blog.title}
+        </div>
+        <div className='author'>
+            {blog.author}
+        </div>
       </div>
       <div>
         <button onClick={toggleVisibility}>{visible ? 'hide' : 'view'}</button>
       </div>
     </div>
-    <div style={{ display: visible ? '' : 'none' }}>
-        <div className='url' style={{ display: 'none' }}>
+    <div style={showWhenVisible} className="details">
+        <div className='url'>
             {blog.url}
         </div>
-        <div className='author'>
-            {blog.author}
-        </div>
-        <div className='likes' style={{ display: 'none' }}>
+        <div className='likes'>
             Likes {blog.likes} <button onClick={() => updateLikes(blog.id)}>like</button>
         </div>
         <div style={{ padding: 3 }}>
