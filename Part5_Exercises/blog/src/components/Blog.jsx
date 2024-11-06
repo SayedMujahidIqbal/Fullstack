@@ -37,10 +37,10 @@ const Blog = ({ blog, updateLikes, deleteBlog }) => {
             {blog.url}
         </div>
         <div className='likes'>
-            Likes {blog.likes} <button onClick={() => updateLikes(blog.id)}>like</button>
+            Likes {blog.likes} <button onClick={updateLikes}>like</button>
         </div>
         <div style={{ padding: 3 }}>
-            <button style={{ borderRadius:5, background: 'lightBlue' }} onClick={() => deleteBlog(blog.id)}>remove</button>
+            <button style={{ borderRadius:5, background: 'lightBlue' }} onClick={deleteBlog}>remove</button>
         </div>
     </div>
   </div>

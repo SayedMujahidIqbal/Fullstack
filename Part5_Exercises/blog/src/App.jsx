@@ -147,8 +147,8 @@ const App = () => {
           <Blog 
             key={blog.id} 
             blog={blog} 
-            updateLikes={handleLikes}
-            deleteBlog={deleteBlog} 
+            updateLikes={() => handleLikes(blog.id)}
+            deleteBlog={() => deleteBlog(blog.id)} 
           />
       )}
     </div>
