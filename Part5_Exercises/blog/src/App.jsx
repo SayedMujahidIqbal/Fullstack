@@ -42,7 +42,7 @@ const App = () => {
       setUser(user)
       setUsername('')
       setPassword('')
-      setMessage({ success: `${user.name} Logged-in successfully` })
+      setMessage({ success: `${user.name} LoggedIn successfully` })
       setTimeout(() => {
         setMessage({ success: ''})
       }, 3000)
@@ -105,14 +105,16 @@ const App = () => {
         <input 
           type="text" 
           name="username"
-          onChange={({ target }) => setUsername(target.value)}  
+          onChange={({ target }) => setUsername(target.value)} 
+          data-testid="username" 
         />
       </div>
       <div>
         <input 
           type="password" 
           name="password"
-          onChange={({ target }) => setPassword(target.value)}  
+          onChange={({ target }) => setPassword(target.value)}
+          data-testid="password"  
         />
       </div>
       <button type='submit'>login</button>
