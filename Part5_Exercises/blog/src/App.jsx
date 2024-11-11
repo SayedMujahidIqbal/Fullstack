@@ -67,7 +67,7 @@ const App = () => {
      const createdBlog = await blogService.createBlog(blogObject)
      if(createdBlog){
         setBlogs(blogs.concat(createdBlog))
-        setMessage({ success: `A new blog  ${createdBlog.title} by ${createdBlog.author} added` })
+        setMessage({ success: `A blog  ${createdBlog.title} by ${createdBlog.author} added` })
         setTimeout(() => {
           setMessage({ success: '' })
         }, 3000)
