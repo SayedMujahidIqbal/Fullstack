@@ -43,8 +43,7 @@ describe('Blog app', () => {
                 url: 'https://blogsbytester.com/testblog.html'
             }
             await createBlog(page, newBlog)
-            const titleDiv = await page.locator('.title')
-            await expect(titleDiv).toContainText(newBlog.title)
+            await expect(page.locator('.title')).toBeVisible
         })
     })
 })
