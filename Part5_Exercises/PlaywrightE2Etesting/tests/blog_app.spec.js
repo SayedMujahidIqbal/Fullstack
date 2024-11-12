@@ -55,14 +55,13 @@ describe('Blog app', () => {
             } 
             createBlog(page, blog)
           })
+
           test('a note can be liked', async ({ page }) => {
-            const blogToBeLikedTitle = await page.locator('.title')
-            await expect(blogToBeLikedTitle).toContainText('my blog')
+            await expect(page.locator('.title')).toContainText('my blog')
             await page.getByRole('button', { name: 'view' }).click()
             const blogText = await page.locator('.likes').innerText()
-            const likes = Number(blogText[6])
             await page.getByRole('button', { name: 'like' }).click()
-            await expect(page.getByText(`Likes ${likes + 1 }`)).toBeVisible()
+            await expect(page.getByText(`Likes ${Number(blogText[6]) + 1 }`)).toBeVisible()
           })
         })
         
