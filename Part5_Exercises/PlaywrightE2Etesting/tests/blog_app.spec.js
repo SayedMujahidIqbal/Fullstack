@@ -65,39 +65,29 @@ describe('Blog app', () => {
                 await page.getByRole('button', { name: 'like' }).click()
                 await expect(page.getByText(`Likes ${Number(blogText[6]) + 1 }`)).toBeVisible()
             })
-
-            test('a blog can only be deleted by blog creator', async ({ page }) => {
-                await expect(page.locator('.title')).toContainText('my blog')
-                await page.getByRole('button', { name: 'view' }).click()
-                await page.getByRole('button', { name: 'remove' }).click()
-                await page.on('dialog', async dialog  => {
-                    console.log(`Remove blog my blog by blogstester ${dialog.message()}`);
-                    await dialog.accept()
-                })
-                await expect(page.locator('.title').getByText('my blog')).not.toBeVisible()
-            })
         })
 
-        // describe('when deleting a blog', async () => {
-        //     beforeEach(async({ page }) => {
-        //         const myBlog = {
-        //             title: 'my blog 2',
-        //             author: 'blogstester',
-        //             url: 'https://blogsbytester.com/myblogtwo.html'
-        //         } 
-        //         createBlog(page, myBlog)
-        //     }) 
+        describe('when deleting a blog', async () => {
+            beforeEach(async({ page }) => {
+                const myBlog = {
+                    title: 'my blog 2',
+                    author: 'blogstester',
+                    url: 'https://blogsbytester.com/myblogtwo.html'
+                } 
+                createBlog(page, myBlog)
+            }) 
 
-        //     test('a blog can only be deleted by blog creator', async ({ page }) => {
-        //         await expect(page.locator('.title')).toContainText('my blog 2')
-        //         await page.getByRole('button', { name: 'view' }).click()
-        //         await page.getByRole('button', { name: 'remove' }).click()
-        //         await page.on('dialog', async dialog  => {
-        //             console.log(`Remove blog my blog 2 by blogstester ${dialog.message()}`);
-        //             await dialog.accept()
-        //         })
-        //         await expect(page.locator('.title').getByText('my blog 2')).not.toBeVisible()
-        //     })
-        // })
+            test('a blog can only be deleted by blog creator', async ({ page }) => {
+                await expect(page.locator('.title')).toContainText('my blog 2')
+                await page.getByRole('button', { name: 'view' }).click()
+                await page.waitForTimeout(2000)
+                await page.getByRole('button', { name: 'remove' }).click()
+                await page.on('dialog', async dialog  => {
+                    console.log(`Remove blog my blog 2 by blogstester ${dialog.message()}`);
+                    await dialog.accept()
+                })
+                await expect(page.locator('.title').getByText('my blog 2')).not.toBeVisible()
+            })
+        })
     })
 })
