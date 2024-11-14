@@ -41,7 +41,7 @@ const Blog = ({ blog, updateLikes, deleteBlog, user }) => {
         </div>
         {
           user && user.id === blog.creator.id && 
-          <div style={{  padding: 3 }}>
+          <div style={{  padding: 3 }} className="remove-blog">
             <button style={{ borderRadius:5, background: 'lightBlue' }} onClick={deleteBlog}>remove</button>
           </div>
         }

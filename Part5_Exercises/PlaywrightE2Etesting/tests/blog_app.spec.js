@@ -1,9 +1,11 @@
 const { test, expect, beforeEach, describe } = require('@playwright/test')
 const { login, createBlog } = require('./handler')
+const path = require('path')
+
 
 describe('Blog app', () => {
     beforeEach(async({ page, request }) => {
-        await request.post('./api/testing/reset')
+        await request.post('/api/testing/reset')
         await request.post('/api/users', {
             data: {
                 name: 'tester',
@@ -43,27 +45,59 @@ describe('Blog app', () => {
                 url: 'https://blogsbytester.com/testblog.html'
             }
             await createBlog(page, newBlog)
-            await expect(page.locator('.title')).toBeVisible
+            await expect(page.locator('.title')).toContainText('test blog')
         })
 
         describe('a blog exists ', () => {
-          beforeEach(async ({ page }) => {
-            const blog = {
-                title: 'my blog',
-                author: 'blogstester',
-                url: 'https://blogsbytester.com/myblog.html'
-            } 
-            createBlog(page, blog)
-          })
+            beforeEach(async ({ page }) => {
+                const blog = {
+                    title: 'my blog',
+                    author: 'blogstester',
+                    url: 'https://blogsbytester.com/myblog.html'
+                } 
+                createBlog(page, blog)
+            })
 
-          test('a note can be liked', async ({ page }) => {
-            await expect(page.locator('.title')).toContainText('my blog')
-            await page.getByRole('button', { name: 'view' }).click()
-            const blogText = await page.locator('.likes').innerText()
-            await page.getByRole('button', { name: 'like' }).click()
-            await expect(page.getByText(`Likes ${Number(blogText[6]) + 1 }`)).toBeVisible()
-          })
+            test('a note can be liked', async ({ page }) => {
+                await expect(page.locator('.title')).toContainText('my blog')
+                await page.getByRole('button', { name: 'view' }).click()
+                const blogText = await page.locator('.likes').innerText()
+                await page.getByRole('button', { name: 'like' }).click()
+                await expect(page.getByText(`Likes ${Number(blogText[6]) + 1 }`)).toBeVisible()
+            })
+
+            test('a blog can only be deleted by blog creator', async ({ page }) => {
+                await expect(page.locator('.title')).toContainText('my blog')
+                await page.getByRole('button', { name: 'view' }).click()
+                await page.getByRole('button', { name: 'remove' }).click()
+                await page.on('dialog', async dialog  => {
+                    console.log(`Remove blog my blog by blogstester ${dialog.message()}`);
+                    await dialog.accept()
+                })
+                await expect(page.locator('.title').getByText('my blog')).not.toBeVisible()
+            })
         })
-        
+
+        // describe('when deleting a blog', async () => {
+        //     beforeEach(async({ page }) => {
+        //         const myBlog = {
+        //             title: 'my blog 2',
+        //             author: 'blogstester',
+        //             url: 'https://blogsbytester.com/myblogtwo.html'
+        //         } 
+        //         createBlog(page, myBlog)
+        //     }) 
+
+        //     test('a blog can only be deleted by blog creator', async ({ page }) => {
+        //         await expect(page.locator('.title')).toContainText('my blog 2')
+        //         await page.getByRole('button', { name: 'view' }).click()
+        //         await page.getByRole('button', { name: 'remove' }).click()
+        //         await page.on('dialog', async dialog  => {
+        //             console.log(`Remove blog my blog 2 by blogstester ${dialog.message()}`);
+        //             await dialog.accept()
+        //         })
+        //         await expect(page.locator('.title').getByText('my blog 2')).not.toBeVisible()
+        //     })
+        // })
     })
 })
