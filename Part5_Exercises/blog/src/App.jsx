@@ -81,12 +81,11 @@ const App = () => {
     setBlogs(blogs.map(blog => blog.id === id ? resultantBlog : blog))
   }
 
-  const deleteBlog = async (id) => {
-    const blog = blogs.find(b => b.id === id)
+  const deleteBlog = async (blog) => {
     alert(`Remove blog ${blog.title} by ${blog.author}`)
     try {
-      await blogService.deleteBlog(id)
-      setBlogs(blogs.filter(b => b.id !== id))
+      await blogService.deleteBlog(blog.id)
+      setBlogs(blogs.filter(b => b.id !== blog.id))
       setMessage({ success: `${blog.title} by ${blog.author} removed` })
       setTimeout(() => {
         setMessage({ success: '' })
@@ -150,7 +149,8 @@ const App = () => {
             key={blog.id} 
             blog={blog} 
             updateLikes={() => handleLikes(blog.id)}
-            deleteBlog={() => deleteBlog(blog.id)} 
+            deleteBlog={() => deleteBlog(blog)}
+            loggedInUsername={user && user.username}
           />
       )}
     </div>

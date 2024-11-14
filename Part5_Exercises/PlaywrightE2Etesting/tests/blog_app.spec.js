@@ -80,7 +80,6 @@ describe('Blog app', () => {
             test('a blog can only be deleted by blog creator', async ({ page }) => {
                 await expect(page.locator('.title')).toContainText('my blog 2')
                 await page.getByRole('button', { name: 'view' }).click()
-                await page.waitForTimeout(2000)
                 await page.getByRole('button', { name: 'remove' }).click()
                 await page.on('dialog', async dialog  => {
                     console.log(`Remove blog my blog 2 by blogstester ${dialog.message()}`);
