@@ -1,6 +1,5 @@
 // @ts-check
 const { defineConfig, devices } = require('@playwright/test');
-const { login } = require('./tests/handler');
 
 /**
  * Read environment variables from file.
@@ -34,11 +33,11 @@ module.exports = defineConfig({
 
   /* Configure projects for major browsers */
   projects: [
-      {
-        name: 'chromium',
-        use: { 
-          ...devices['Desktop Chrome'], 
-        }
+    {
+      name: 'chromium',
+      use: { 
+        ...devices['Desktop Chrome'], 
+      }
     },
 
     {
