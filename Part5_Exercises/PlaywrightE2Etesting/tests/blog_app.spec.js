@@ -75,8 +75,14 @@ describe('Blog app', () => {
                     url: 'https://blogsbytester.com/myblogtwo.html'
                 } 
                 createBlog(page, myBlog)
+            })
+            
+            test('remove button can only be displayed for creator', async ({ page }) => {
+                await expect(page.locator('.title')).toContainText('my blog 2')
+                await page.getByRole('button', { name: 'view' }).click()
+                await expect(page.getByRole('button', { name: 'remove' })).toBeVisible()
             }) 
-
+    
             test('a blog can only be deleted by blog creator', async ({ page }) => {
                 await expect(page.locator('.title')).toContainText('my blog 2')
                 await page.getByRole('button', { name: 'view' }).click()
