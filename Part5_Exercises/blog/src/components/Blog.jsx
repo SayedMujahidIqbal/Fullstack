@@ -9,7 +9,8 @@ const Blog = ({ blog, updateLikes, deleteBlog, loggedInUsername }) => {
     paddingLeft: 2,
     border: 'solid',
     borderWidth: 1,
-    marginBottom: 5
+    marginBottom: 5,
+    listStyleType: 'none'
   }
 
   const toggleVisibility = () => {
@@ -19,36 +20,26 @@ const Blog = ({ blog, updateLikes, deleteBlog, loggedInUsername }) => {
   const showWhenVisible = { display: visible ? '' : 'none' }
 
  return( 
-  <div style={blogStyle}>
-    <div style={{ display: "flex" }}>
-      <div style={{ display: 'block' }}>
-        <div style={{ paddingRight: 4 }} className="title">
-          {blog.title}
-        </div>
-        <div className='author'>
-            {blog.author}
-        </div>
+    <li style={blogStyle} className="blogs">
+      <span className="title">{blog.title}</span>
+      <button onClick={toggleVisibility}>{visible ? 'hide' : 'view'}</button>
+      <div style={showWhenVisible} className="details">
+        <p className="author" style={{ lineHeight: 0 }}>{blog.author}</p>
+        <p className="url" style={{ lineHeight: 0 }}>{blog.url}</p>
+        <p className="likes" style={{ lineHeight: 0 }}>Likes {blog.likes} <button onClick={updateLikes}>like</button></p>
+        {
+          loggedInUsername === blog.creator.username && 
+            <button 
+              style={{ 
+                borderRadius:5, 
+                background: 'lightBlue' 
+              }} 
+              onClick={deleteBlog}>
+                remove
+            </button>
+        }
       </div>
-      <div>
-        <button onClick={toggleVisibility}>{visible ? 'hide' : 'view'}</button>
-      </div>
-    </div>
-    <div style={showWhenVisible} className="details">
-      <div className='url'>
-          {blog.url}
-      </div>
-      <div className='likes'>
-          Likes {blog.likes} <button onClick={updateLikes}>like</button>
-      </div>
-      {
-        loggedInUsername === blog.creator.username && (
-          <div style={{  padding: 3 }} className="remove-btn">
-            <button style={{ borderRadius:5, background: 'lightBlue' }} onClick={deleteBlog}>remove</button>
-          </div>
-        )
-      }
-    </div>
-  </div>
+    </li>
  )  
 }
 

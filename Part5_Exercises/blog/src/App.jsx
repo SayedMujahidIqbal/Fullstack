@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import Blog from './components/Blog'
 import blogService from './services/blogs'
 import loginService from './services/login'
@@ -12,6 +12,8 @@ const App = () => {
   const [username, setUsername] = useState('')
   const [password, setPassword] = useState('')
   const [user, setUser] = useState(null)
+
+  const blgoFormRef = useRef()
 
   blogs.sort((a, b) => a.likes < b.likes ? 1 : -1)
  
@@ -122,7 +124,7 @@ const App = () => {
 
   const blogForm = () => {
     return(
-      <Togglable buttonLabel="create new blog">
+      <Togglable buttonLabel="create new blog" ref={blgoFormRef}>
         <BlogForm
           createBlog={addBlog}
         />
@@ -144,15 +146,19 @@ const App = () => {
           </div>
 
       }
-      {blogs.map(blog =>
-          <Blog 
-            key={blog.id} 
-            blog={blog} 
-            updateLikes={() => handleLikes(blog.id)}
-            deleteBlog={() => deleteBlog(blog)}
-            loggedInUsername={user && user.username}
-          />
-      )}
+      <ul style={{ marginLeft: 0 }}>
+        {
+          blogs.map(blog =>
+            <Blog 
+              key={blog.id} 
+              blog={blog} 
+              updateLikes={() => handleLikes(blog.id)}
+              deleteBlog={() => deleteBlog(blog)}
+              loggedInUsername={user && user.username}
+            />
+          )
+        }
+      </ul>
     </div>
   )
 }

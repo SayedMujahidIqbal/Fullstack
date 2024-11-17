@@ -42,7 +42,7 @@ describe('Blog app', () => {
             const newBlog = {
                 title: 'test blog',
                 author: 'tester',
-                url: 'https://blogsbytester.com/testblog.html'
+                url: 'https://blogsbytester.com/testblog.html',
             }
             await createBlog(page, newBlog)
             await expect(page.locator('.title')).toContainText('test blog')
@@ -53,17 +53,18 @@ describe('Blog app', () => {
                 const blog = {
                     title: 'my blog',
                     author: 'blogstester',
-                    url: 'https://blogsbytester.com/myblog.html'
+                    url: 'https://blogsbytester.com/myblog.html',
                 } 
-                createBlog(page, blog)
+                await createBlog(page, blog)
             })
 
             test('a note can be liked', async ({ page }) => {
-                await expect(page.locator('.title')).toContainText('my blog')
-                await page.getByRole('button', { name: 'view' }).click()
-                const blogText = await page.locator('.likes').innerText()
-                await page.getByRole('button', { name: 'like' }).click()
-                await expect(page.getByText(`Likes ${Number(blogText[6]) + 1 }`)).toBeVisible()
+                const blogTitle = await page.getByText('my blog')
+                const blogElement = await blogTitle.locator('..')
+                await blogElement.getByRole('button', { name: 'view' }).click()
+                const blogText = await blogElement.locator('.likes').innerText()
+                await blogElement.getByRole('button', { name: 'like' }).click()
+                await expect(blogElement.getByText(`Likes ${Number(blogText[6]) + 1 }`)).toBeVisible()
             })
         })
 
@@ -72,27 +73,58 @@ describe('Blog app', () => {
                 const myBlog = {
                     title: 'my blog 2',
                     author: 'blogstester',
-                    url: 'https://blogsbytester.com/myblogtwo.html'
+                    url: 'https://blogsbytester.com/myblogtwo.html',
                 } 
-                createBlog(page, myBlog)
+                await createBlog(page, myBlog)
             })
-            
+
             test('remove button can only be displayed for creator', async ({ page }) => {
-                await expect(page.locator('.title')).toContainText('my blog 2')
-                await page.getByRole('button', { name: 'view' }).click()
-                await expect(page.getByRole('button', { name: 'remove' })).toBeVisible()
+                const blogTitle = await page.getByText('my blog 2')
+                const blogElement = await blogTitle.locator('..')
+                await blogElement.getByRole('button', { name: 'view' }).click()
+                await expect(page.locator('.details')).toBeVisible()
+                const blogDetails = await page.locator('.details')
+                await expect(blogDetails.getByRole('button', { name: 'remove' })).toBeVisible()
             }) 
     
             test('a blog can only be deleted by blog creator', async ({ page }) => {
-                await expect(page.locator('.title')).toContainText('my blog 2')
-                await page.getByRole('button', { name: 'view' }).click()
-                await page.getByRole('button', { name: 'remove' }).click()
+                const blogTitle = await page.getByText('my blog 2')
+                const blogElement = await blogTitle.locator('..')
+                await blogElement.getByRole('button', { name: 'view' }).click()
+                await expect(page.locator('.details')).toBeVisible()
+                const blogDetails = await page.locator('.details')
+                await blogDetails.getByRole('button', { name: 'remove' }).click()
                 await page.on('dialog', async dialog  => {
                     console.log(`Remove blog my blog 2 by blogstester ${dialog.message()}`);
                     await dialog.accept()
                 })
-                await expect(page.locator('.title').getByText('my blog 2')).not.toBeVisible()
+                await expect(page.getByText('my blog 2')).not.toBeVisible()
             })
+        })
+
+        describe('sort blogs according to likes', () => {
+          beforeEach(async({page}) => {
+            await createBlog(page, {
+                title: 'my blog 3',
+                author: 'blogstester',
+                url: 'https://blogsbytester.com/myblogthree.html',
+            })
+            await createBlog(page, {
+                title: 'my blog 4',
+                author: 'blogstester',
+                url: 'https://blogsbytester.com/myblog4.html',
+            })
+          })
+
+          test('blog sorted according to likes', async({ page }) => {
+            const firstBlog = await page.getByText('my blog 3').locator('..')
+            await firstBlog.getByRole('button', { name: 'view' }).click()
+            await firstBlog.getByRole('button', { name: 'like' }).click()
+            const blogText = await firstBlog.locator('.likes').innerText()
+            await expect(firstBlog.getByText(`Likes ${Number(blogText[6]) + 1 }`)).toBeVisible()
+            const firstBlogAfterSort = await page.locator('.blogs').first().innerText()
+            await expect(page.locator('.title').first()).toContainText(firstBlogAfterSort.split('h')[0])
+          })
         })
     })
 })
