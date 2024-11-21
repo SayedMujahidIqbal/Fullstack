@@ -1,26 +1,27 @@
 import { useDispatch, useSelector } from "react-redux"
-import { increaseVote } from "../reducers/anecdoteReducer"
+import { incrementVote } from "../reducers/anecdoteReducer"
 import Anecdote from "./Anecdote"
 
 const AnecdoteList = () => {
+    const dispatch = useDispatch()
     const anecdotes = useSelector(({filter, anecdotes}) => {
         if(filter === ''){
             return anecdotes.anecdotes
         }else{
-            return anecdotes.anecdotes.filter((anecdote) => anecdote.content.toLowerCase().includes(filter.toLowerCase()))
+            return [...anecdotes.anecdotes].filter((anecdote) => anecdote.content.toLowerCase().includes(filter.toLowerCase()))
         }
         
     })
-    anecdotes.sort((a, b) => a.votes < b.votes ? 1 : -1)
-    const dispatch = useDispatch()
+
+    const sortedAnecodtes = [...anecdotes].sort((a, b) => a.votes < b.votes ? 1 : -1)
     
     const vote = (id) => {
-        dispatch(increaseVote(id))
+        dispatch(incrementVote(id))
     }
 
     return(
         <ul>
-            {anecdotes.map(anecdote =>
+            {sortedAnecodtes.map(anecdote =>
                 <Anecdote
                     key={anecdote.id} 
                     anecdote={anecdote}
