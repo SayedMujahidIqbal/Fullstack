@@ -21,30 +21,28 @@ const asObject = (anecdote) => {
 
 const anecdotes = anecdotesAtStart.map(asObject)
 
-const initialState = {
-  filter: '',
-  anecdotes: [...anecdotes]
-}
+const initialState = [...anecdotes]
 
 const anecdotesSlice = createSlice({
   name: 'anecdotes',
   initialState,
   reducers: {
     createAnecdote(state, action){
-      const newAnecdotes = state.anecdotes.concat(action.payload)
-      console.log(newAnecdotes)
-      return state.anecdotes.concat(action.payload)
+      return state.concat({
+        content: action.payload,
+        id: getId(),
+        votes: 0
+      })
     },
     incrementVote(state, action){
-      const id = action.payload.id
-      console.log("state", state)
-      const anecdoteToIncreaseVote = state.anecdotes.find(a => a.id === id)
+      const id = action.payload
+      const anecdoteToIncreaseVote = state.find(a => a.id === id)
       console.log(anecdoteToIncreaseVote)
       const changedAnecdote = {
         ...anecdoteToIncreaseVote,
         votes: anecdoteToIncreaseVote.votes + 1
       }
-      return state.anecdotes.map(anecdote => anecdote.id !== id ? anecdote : changedAnecdote)
+      return state.map(anecdote => anecdote.id !== id ? anecdote : changedAnecdote)
     }
   }
 })
