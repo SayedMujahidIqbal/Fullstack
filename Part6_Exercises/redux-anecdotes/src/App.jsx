@@ -10,7 +10,7 @@ const App = () => {
   const dispatch = useDispatch()
   setTimeout(() => {
     dispatch(setNotification(''))
-  }, 3000)
+  }, 5000)
 
   return (
     <div>
