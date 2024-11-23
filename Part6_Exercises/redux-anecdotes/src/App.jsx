@@ -1,9 +1,12 @@
+import { useEffect } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import AnecdoteList from './components/AnecdoteList'
 import NewAnecdote from './components/NewAnecdote'
 import Notification from './components/Notification'
 import SearchFilter from './components/SearchFilter'
 import { setNotification } from './reducers/notificationReducer'
+import anecdoteServices from './services/anecdoteServices'
+import { setAnecdotes } from './reducers/anecdoteReducer'
 
 const App = () => {
   const notification = useSelector(state => state.notification)
@@ -11,6 +14,10 @@ const App = () => {
   setTimeout(() => {
     dispatch(setNotification(''))
   }, 5000)
+
+  useEffect(() => {
+    anecdoteServices.getAll().then(anecdotes => setAnecdotes(anecdotes))
+  }, [])
 
   return (
     <div>
