@@ -13,8 +13,6 @@ const App = () => {
   useEffect(() => {
     dispatch(initalizeAnecdotes())
   }, [])
-
-  console.log("notification", notification)
   
   return (
     <div>
