@@ -18,6 +18,8 @@ const App = () => {
     personService.create({ name: name.value, number: number.value})
   }
 
+  console.log(notes, persons)
+
   return (
     <div>
       <h2>notes</h2>
@@ -25,7 +27,9 @@ const App = () => {
         <input {...content} />
         <button>create</button>
       </form>
-      {notes.map(n => <p key={n.id}>{n.content}</p>)}
+      <ul>
+        {notes.map(n => <li key={n.id}>{n.content}</li>)}
+      </ul>
 
       <h2>persons</h2>
       <form onSubmit={handlePersonSubmit}>
@@ -33,7 +37,9 @@ const App = () => {
         number <input {...number} />
         <button>create</button>
       </form>
-      {persons.map(n => <p key={n.id}>{n.name} {n.number}</p>)}
+      <ul>
+         {persons.map(p => <li key={p.id}>{p.name} {p.number}</li>)}
+      </ul>
     </div>
   )
 }
