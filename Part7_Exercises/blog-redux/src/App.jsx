@@ -5,21 +5,23 @@ import loginService from "./services/login";
 import Notification from "./components/Notification";
 import Togglable from "./components/Togglable";
 import BlogForm from "./components/BlogForm";
+import { useDispatch, useSelector } from "react-redux";
+import { createBlog, initiliazeBlogs } from "./reducers/blogReducer";
 
 const App = () => {
-  const [blogs, setBlogs] = useState([]);
+  const blogs = useSelector((state) => state.blogs);
   const [message, setMessage] = useState({ error: "", success: "" });
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [user, setUser] = useState(null);
-
-  const blgoFormRef = useRef();
-
-  blogs.sort((a, b) => (a.likes < b.likes ? 1 : -1));
+  const blogFormRef = useRef();
+  const dispatch = useDispatch();
 
   useEffect(() => {
-    blogService.getAll().then((blogs) => setBlogs(blogs));
+    dispatch(initiliazeBlogs());
   }, []);
+
+  [...blogs].sort((a, b) => (a.likes < b.likes ? 1 : -1));
 
   useEffect(() => {
     const loggedUserJSON = window.localStorage.getItem("loggedBlogappUser");
@@ -65,9 +67,8 @@ const App = () => {
   };
 
   const addBlog = async (blogObject) => {
-    const createdBlog = await blogService.createBlog(blogObject);
+    const createdBlog = dispatch(createBlog(blogObject));
     if (createdBlog) {
-      setBlogs(blogs.concat(createdBlog));
       setMessage({
         success: `A blog  ${createdBlog.title} by ${createdBlog.author} added`,
       });
@@ -81,7 +82,7 @@ const App = () => {
     const blog = blogs.find((b) => b.id === id);
     const updatedBlog = { ...blog, likes: blog.likes + 1 };
     const resultantBlog = await blogService.updatedBlog(id, updatedBlog);
-    setBlogs(blogs.map((blog) => (blog.id === id ? resultantBlog : blog)));
+    setBlogs(blogs.map((b) => (b.id !== id ? b : resultantBlog)));
   };
 
   const deleteBlog = async (blog) => {
@@ -129,7 +130,7 @@ const App = () => {
 
   const blogForm = () => {
     return (
-      <Togglable buttonLabel="create new blog" ref={blgoFormRef}>
+      <Togglable buttonLabel="create new blog" ref={blogFormRef}>
         <BlogForm createBlog={addBlog} />
       </Togglable>
     );
