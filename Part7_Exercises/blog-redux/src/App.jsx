@@ -7,12 +7,18 @@ import Togglable from "./components/Togglable";
 import BlogForm from "./components/BlogForm";
 import { useDispatch, useSelector } from "react-redux";
 import { createBlog, initiliazeBlogs } from "./reducers/blogReducer";
+import { useField } from "./hooks/useField";
+import {
+  clearMessage,
+  setErrorMessage,
+  setSuccessMessage,
+} from "./reducers/notificationReducer";
 
 const App = () => {
-  const blogs = useSelector((state) => state.blogs);
-  const [message, setMessage] = useState({ error: "", success: "" });
-  const [username, setUsername] = useState("");
-  const [password, setPassword] = useState("");
+  const blogs = useSelector(({ blogs }) => blogs);
+  const { success, error } = useSelector((state) => state.notification);
+  const username = useField("text");
+  const password = useField("password");
   const [user, setUser] = useState(null);
   const blogFormRef = useRef();
   const dispatch = useDispatch();
@@ -36,46 +42,46 @@ const App = () => {
     event.preventDefault();
     try {
       const user = await loginService.login({
-        username,
-        password,
+        username: username.value,
+        password: password.value,
       });
 
       window.localStorage.setItem("loggedBlogappUser", JSON.stringify(user));
       blogService.setToken(user.token);
       setUser(user);
-      setUsername("");
-      setPassword("");
-      setMessage({ success: `${user.name} LoggedIn successfully` });
+      username.reset();
+      password.reset();
+      dispatch(setSuccessMessage(`${user.name} LoggedIn successfully`));
       setTimeout(() => {
-        setMessage({ success: "" });
+        dispatch(clearMessage());
       }, 3000);
     } catch (error) {
-      setMessage({ error: "Wrong credentials" });
+      dispatch(setErrorMessage("Wrong credentials"));
       setTimeout(() => {
-        setMessage({ error: "" });
+        dispatch(clearMessage(""));
       }, 3000);
     }
   };
 
   const handleLogout = () => {
     window.localStorage.removeItem("loggedBlogappUser");
-    setMessage({ success: `${user.name} logged-out successfully` });
+    dispatch(setSuccessMessage(`${user.name} logged-out successfully`));
     setTimeout(() => {
-      setMessage({ success: "" });
+      dispatch(clearMessage());
     }, 3000);
     setUser(null);
   };
 
-  const addBlog = async (blogObject) => {
-    const createdBlog = dispatch(createBlog(blogObject));
-    if (createdBlog) {
-      setMessage({
-        success: `A blog  ${createdBlog.title} by ${createdBlog.author} added`,
-      });
-      setTimeout(() => {
-        setMessage({ success: "" });
-      }, 3000);
-    }
+  const addBlog = (blogObject) => {
+    dispatch(createBlog(blogObject));
+    dispatch(
+      setSuccessMessage(
+        `A blog  ${blogObject.title} by ${blogObject.author} added`
+      )
+    );
+    setTimeout(() => {
+      dispatch(clearMessage());
+    }, 3000);
   };
 
   const handleLikes = async (id) => {
@@ -90,14 +96,14 @@ const App = () => {
     try {
       await blogService.deleteBlog(blog.id);
       setBlogs(blogs.filter((b) => b.id !== blog.id));
-      setMessage({ success: `${blog.title} by ${blog.author} removed` });
+      dispatch(setSuccessMessage(`${blog.title} by ${blog.author} removed`));
       setTimeout(() => {
-        setMessage({ success: "" });
+        dispatch(clearMessage());
       }, 3000);
     } catch (error) {
-      setMessage({ error: "You are not authorized to delete this blog" });
+      dispatch(setErrorMessage("You are not authorized to delete this blog"));
       setTimeout(() => {
-        setMessage({ error: "" });
+        dispatch(clearMessage());
       }, 3000);
     }
   };
@@ -105,22 +111,10 @@ const App = () => {
   const loginForm = () => (
     <form onSubmit={handleLogin}>
       <div>
-        <input
-          type="text"
-          name="username"
-          onChange={({ target }) => setUsername(target.value)}
-          data-testid="username"
-          id="username"
-        />
+        <input {...{ ...username, reset: undefined }} />
       </div>
       <div>
-        <input
-          type="password"
-          name="password"
-          onChange={({ target }) => setPassword(target.value)}
-          data-testid="password"
-          id="password"
-        />
+        <input {...{ ...password, reset: undefined }} />
       </div>
       <button type="submit" id="login-button">
         login
@@ -139,7 +133,7 @@ const App = () => {
   return (
     <div>
       <h2>blogs</h2>
-      <Notification message={message} />
+      {error || (success && <Notification success={success} error={error} />)}
       {user === null ? (
         loginForm()
       ) : (
