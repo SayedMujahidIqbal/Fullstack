@@ -4,14 +4,12 @@ import Blogs from "./components/Blogs";
 import { useQuery } from "@tanstack/react-query";
 import { getBlogs } from "./services/blogs";
 import { useEffect, useState } from "react";
+import Notification from "./components/Notification";
+import { useNotificationDispatch } from "./NotificationContext";
 
 const App = () => {
-  const [user, setUser] = useState(null);
-
-  useEffect(() => {
-    setUser(JSON.parse(window.localStorage.getItem("loggedBlogappUser")));
-    console.log("Hello");
-  }, []);
+  const user = JSON.parse(window.localStorage.getItem("loggedBlogappUser"));
+  const dispatch = useNotificationDispatch();
 
   const data = useQuery({
     queryKey: ["blogs"],
@@ -23,15 +21,20 @@ const App = () => {
 
   const handleLogout = () => {
     window.localStorage.removeItem("loggedBlogappUser");
-    setUser(null);
+    dispatch({
+      type: "LOGOUT",
+      payload: `${user.name} logged out successfully`,
+    });
+    setTimeout(() => {
+      dispatch({ type: "CLEAR_NOTIFICATION" });
+    }, 3000);
   };
 
   if (data.isLoading) return <div>loading...</div>;
 
-  console.log(user);
-
   return (
     <div>
+      <Notification />
       <h2>blogs</h2>
       {user === null ? (
         <Login />

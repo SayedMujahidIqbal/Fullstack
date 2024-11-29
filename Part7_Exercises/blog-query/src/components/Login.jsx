@@ -1,41 +1,43 @@
 import { useMutation } from "@tanstack/react-query";
 import { useField } from "../hooks/useField";
 import { setToken } from "../services/blogs";
-import { useState } from "react";
 import { login } from "../services/login";
+import { useNotificationDispatch } from "../NotificationContext";
 
 const Login = () => {
+  const dispatch = useNotificationDispatch();
   const username = useField("text");
   const password = useField("password");
-  const [message, setMessage] = useState({ success: "", error: "" });
 
   const loginMutation = useMutation({
     mutationFn: login,
     onError: (error) => {
       console.log(error);
-      setMessage({ ...message, error: "Wrong Credentials" });
+      dispatch({
+        type: "LOGIN_FAILURE",
+        payload: `Wrong credentials`,
+      });
       setTimeout(() => {
-        setMessage({ ...message, error: "" });
-      }, 3000);
+        dispatch({ type: "CLEAR_NOTIFICATION" });
+      }, 5000);
     },
     onSuccess: (user) => {
       window.localStorage.setItem("loggedBlogappUser", JSON.stringify(user));
       setToken(user.token);
       username.reset();
       password.reset();
-      setMessage({
-        ...message,
-        success: `${user.name} logged-in successfully`,
+      dispatch({
+        type: "LOGIN_SUCCESS",
+        payload: `${user.name} successfully logged-in`,
       });
       setTimeout(() => {
-        setMessage({ ...message, success: "" });
+        dispatch({ type: "CLEAR_NOTIFICATION" });
       }, 3000);
     },
   });
 
   const loginUser = async (event) => {
     event.preventDefault();
-    console.log("Hello");
     loginMutation.mutateAsync({
       username: username.value,
       password: password.value,

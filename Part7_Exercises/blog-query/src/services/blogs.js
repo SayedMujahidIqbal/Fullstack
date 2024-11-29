@@ -16,6 +16,7 @@ export const createBlog = async (blogObject) => {
   const response = await axios.post(baseUrl, blogObject, config);
   return response.data;
 };
+
 export const updateBlog = async (id, blogObject) => {
   const config = {
     headers: { Authorization: token },
