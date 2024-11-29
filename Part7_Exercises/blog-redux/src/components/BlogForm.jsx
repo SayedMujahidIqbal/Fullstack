@@ -1,67 +1,60 @@
 import PropTypes from "prop-types";
-import { useState } from "react";
-import Notification from "./Notification";
+import { useDispatch } from "react-redux";
+import { clearMessage, setErrorMessage } from "../reducers/notificationReducer";
+import { useField } from "../hooks/useField";
+import { createBlog } from "../reducers/blogReducer";
+import Togglable from "./Togglable";
+import { useRef } from "react";
 
-const BlogForm = ({ createBlog }) => {
-  const [title, setTitle] = useState("");
-  const [author, setAuthor] = useState("");
-  const [url, setURL] = useState("");
-  const [message, setMessage] = useState({ error: "", success: "" });
+const BlogForm = () => {
+  const title = useField("text");
+  const author = useField("text");
+  const url = useField("text");
+  const dispatch = useDispatch();
+  const blogFormRef = useRef();
 
   const addBlog = (event) => {
     event.preventDefault();
-    if (title === "" || author === "" || url === "") {
-      setMessage({ error: "Blog fields cannot be empty" });
+    if (title.value === "" || author.value === "" || url.value === "") {
+      dispatch(setErrorMessage("Blog fields cannot be empty"));
       setTimeout(() => {
-        setMessage({ error: "" });
+        dispatch(clearMessage());
       }, 3000);
     } else {
-      createBlog({ title, author, url });
+      createBlog({ title: title.value, author: author.value, url: url.value });
+      dispatch(
+        setSuccessMessage(
+          `A blog  ${blogObject.title} by ${blogObject.author} added`
+        )
+      );
+      setTimeout(() => {
+        dispatch(clearMessage());
+      }, 3000);
     }
-    setTitle("");
-    setAuthor("");
-    setURL("");
+    title.reset();
+    author.reset();
+    url.reset();
   };
 
   return (
-    <>
-      <Notification message={message} />
+    <Togglable buttonLabel="create new blog" ref={blogFormRef}>
       <form onSubmit={addBlog}>
         <div>
           title:
-          <input
-            value={title}
-            onChange={({ target }) => setTitle(target.value)}
-            data-testid="title"
-            id="title"
-          />
+          <input {...{ ...title, reset: undefined }} />
         </div>
         <div>
           Author:
-          <input
-            value={author}
-            onChange={({ target }) => setAuthor(target.value)}
-            data-testid="author"
-            id="author"
-          />
+          <input {...{ ...author, reset: undefined }} />
         </div>
         <div>
           URL:
-          <input
-            value={url}
-            onChange={({ target }) => setURL(target.value)}
-            data-testid="url"
-            id="url"
-          />
+          <input {...{ ...url, reset: undefined }} />
         </div>
         <button type="submit">Add Blog</button>
       </form>
-    </>
+    </Togglable>
   );
-};
-
-BlogForm.propTypes = {
-  createBlog: PropTypes.func.isRequired,
 };
 
 export default BlogForm;

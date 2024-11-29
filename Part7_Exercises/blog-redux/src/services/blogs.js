@@ -20,7 +20,7 @@ const createBlog = async (blogObject) => {
   return response.data;
 };
 
-const updatedBlog = async (id, blogObject) => {
+const updateBlog = async (id, blogObject) => {
   const config = {
     headers: { Authorization: token },
   };
@@ -36,4 +36,4 @@ const deleteBlog = async (id) => {
   return response.data;
 };
 
-export default { getAll, setToken, createBlog, updatedBlog, deleteBlog };
+export default { getAll, setToken, createBlog, updateBlog, deleteBlog };

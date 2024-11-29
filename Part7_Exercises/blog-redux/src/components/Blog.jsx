@@ -1,8 +1,15 @@
 import { useState } from "react";
-import PropTypes from "prop-types";
+import { useDispatch } from "react-redux";
+import { deletingBlog } from "../reducers/blogReducer";
+import {
+  clearMessage,
+  setErrorMessage,
+  setSuccessMessage,
+} from "../reducers/notificationReducer";
 
-const Blog = ({ blog, updateLikes, deleteBlog, loggedInUsername }) => {
+const Blog = ({ blog, loggedInUsername, blogs }) => {
   const [visible, setVisible] = useState(false);
+  const dispatch = useDispatch();
 
   const blogStyle = {
     paddingTop: 10,
@@ -11,6 +18,28 @@ const Blog = ({ blog, updateLikes, deleteBlog, loggedInUsername }) => {
     borderWidth: 1,
     marginBottom: 5,
     listStyleType: "none",
+  };
+
+  const deleteBlog = async (blog) => {
+    alert(`Remove blog ${blog.title} by ${blog.author}`);
+    try {
+      dispatch(deletingBlog(blog));
+      dispatch(setSuccessMessage(`${blog.title} by ${blog.author} removed`));
+      setTimeout(() => {
+        dispatch(clearMessage());
+      }, 3000);
+    } catch (error) {
+      dispatch(setErrorMessage("You are not authorized to delete this blog"));
+      setTimeout(() => {
+        dispatch(clearMessage());
+      }, 3000);
+    }
+  };
+
+  const handleLikes = async (id) => {
+    const blog = blogs.find((b) => b.id === id);
+    const updatedBlog = { ...blog, likes: blog.likes + 1 };
+    dispatch(likingBlog(updatedBlog));
   };
 
   const toggleVisibility = () => {
@@ -31,7 +60,8 @@ const Blog = ({ blog, updateLikes, deleteBlog, loggedInUsername }) => {
           {blog.url}
         </p>
         <p className="likes" style={{ lineHeight: 0 }}>
-          Likes {blog.likes} <button onClick={updateLikes}>like</button>
+          Likes {blog.likes}{" "}
+          <button onClick={() => handleLikes(blog.id)}>like</button>
         </p>
         {loggedInUsername === blog.creator.username && (
           <button
@@ -39,7 +69,7 @@ const Blog = ({ blog, updateLikes, deleteBlog, loggedInUsername }) => {
               borderRadius: 5,
               background: "lightBlue",
             }}
-            onClick={deleteBlog}
+            onClick={() => deleteBlog(blog)}
           >
             remove
           </button>
@@ -47,11 +77,6 @@ const Blog = ({ blog, updateLikes, deleteBlog, loggedInUsername }) => {
       </div>
     </li>
   );
-};
-
-Blog.propTypes = {
-  updateLikes: PropTypes.func.isRequired,
-  deleteBlog: PropTypes.func.isRequired,
 };
 
 export default Blog;
