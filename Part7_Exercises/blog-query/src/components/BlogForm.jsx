@@ -16,7 +16,6 @@ const BlogForm = () => {
   const newBlogMutation = useMutation({
     mutationFn: createBlog,
     onSuccess: (newBlog) => {
-      console.log("hello from mutaion", newBlog);
       const blogs = queryClient.getQueryData(["blogs"]);
       queryClient.setQueryData(["blogs"], blogs.concat(newBlog));
       dispatch({

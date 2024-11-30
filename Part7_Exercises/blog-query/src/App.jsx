@@ -3,7 +3,6 @@ import BlogForm from "./components/BlogForm";
 import Blogs from "./components/Blogs";
 import { useQuery } from "@tanstack/react-query";
 import { getBlogs } from "./services/blogs";
-import { useEffect, useState } from "react";
 import Notification from "./components/Notification";
 import { useNotificationDispatch } from "./NotificationContext";
 
@@ -32,10 +31,12 @@ const App = () => {
 
   if (data.isLoading) return <div>loading...</div>;
 
+  const sortedBlogs = [...blogs].sort((a, b) => (a.likes < b.likes ? 1 : -1));
+
   return (
     <div>
-      <Notification />
       <h2>blogs</h2>
+      <Notification />
       {user === null ? (
         <Login />
       ) : (
@@ -46,7 +47,7 @@ const App = () => {
           {<BlogForm />}
         </div>
       )}
-      <Blogs blogs={blogs} />
+      <Blogs blogs={sortedBlogs} user={user} />
     </div>
   );
 };

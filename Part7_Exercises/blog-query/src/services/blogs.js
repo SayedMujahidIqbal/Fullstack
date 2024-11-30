@@ -17,11 +17,15 @@ export const createBlog = async (blogObject) => {
   return response.data;
 };
 
-export const updateBlog = async (id, blogObject) => {
+export const updateBlog = async (blogObject) => {
   const config = {
     headers: { Authorization: token },
   };
-  const response = await axios.put(`${baseUrl}/${id}`, blogObject, config);
+  const response = await axios.put(
+    `${baseUrl}/${blogObject.id}`,
+    blogObject,
+    config
+  );
   return response.data;
 };
 

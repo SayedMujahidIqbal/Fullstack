@@ -12,6 +12,10 @@ const notificationReducer = (state, action) => {
       return action.payload;
     case "INVALID_BLOG":
       return action.payload;
+    case "DELETE_BLOG_SUCCESS":
+      return action.payload;
+    case "DELETE_BLOG_FAILURE":
+      return action.payload;
     case "CLEAR_NOTIFICATION":
       return "";
     default:
