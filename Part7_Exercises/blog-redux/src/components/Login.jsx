@@ -1,3 +1,4 @@
+import { useNavigate } from "react-router-dom";
 import { useField } from "../hooks/useField";
 import { login } from "../reducers/loginReducer";
 import {
@@ -11,6 +12,7 @@ const Login = () => {
   const username = useField("text");
   const password = useField("password");
   const dispatch = useDispatch();
+  const navigate = useNavigate();
 
   const handleLogin = async (event) => {
     event.preventDefault();
@@ -23,6 +25,7 @@ const Login = () => {
       );
       username.reset();
       password.reset();
+      navigate("/");
     } catch (error) {
       dispatch(setErrorMessage("Wrong credentials"));
       setTimeout(() => {

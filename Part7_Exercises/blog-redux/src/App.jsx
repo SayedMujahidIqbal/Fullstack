@@ -1,7 +1,6 @@
 import { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import Notification from "./components/Notification";
-import BlogForm from "./components/BlogForm";
 import { initiliazeBlogs } from "./reducers/blogReducer";
 import {
   clearMessage,
@@ -10,15 +9,21 @@ import {
 import Login from "./components/Login";
 import { loggingOut } from "./reducers/loginReducer";
 import Blogs from "./components/Blogs";
+import { initliazeUsers } from "./reducers/userReducer";
+import Menu from "./components/Menu";
+import { Route, Routes } from "react-router-dom";
+import Users from "./components/Users";
 
 const App = () => {
   const blogs = useSelector(({ blogs }) => blogs);
+  const users = useSelector(({ users }) => users);
   const { success, error } = useSelector((state) => state.notification);
   const user = JSON.parse(window.localStorage.getItem("loggedBlogappUser"));
   const dispatch = useDispatch();
 
   useEffect(() => {
     dispatch(initiliazeBlogs());
+    dispatch(initliazeUsers());
   }, []);
 
   const handleLogout = () => {
@@ -33,23 +38,19 @@ const App = () => {
   const sortedBlogs = [...blogs].sort((a, b) => (a.likes < b.likes ? 1 : -1));
 
   return (
-    <div>
-      <h2>blogs</h2>
+    <>
       {(error !== "" || success !== "") && (
         <Notification success={success} error={error} />
       )}
-      {user === null ? (
-        <Login />
-      ) : (
-        <div>
-          <p>
-            {user.name} logged-in <button onClick={handleLogout}>logout</button>{" "}
-          </p>
-          {<BlogForm />}
-        </div>
-      )}
-      <Blogs blogs={sortedBlogs} user={user} />
-    </div>
+      <Menu user={user} handleLogout={handleLogout} />
+      <div>
+        <Routes>
+          <Route path="/login" element={<Login />} />
+          <Route path="/users" element={<Users />} />
+          <Route path="/" element={<Blogs blogs={sortedBlogs} user={user} />} />
+        </Routes>
+      </div>
+    </>
   );
 };
 
