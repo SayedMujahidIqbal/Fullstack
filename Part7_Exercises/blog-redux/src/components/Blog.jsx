@@ -1,29 +1,24 @@
-import { useState } from "react";
-import { useDispatch } from "react-redux";
-import { deletingBlog } from "../reducers/blogReducer";
+import { useDispatch, useSelector } from "react-redux";
 import {
   clearMessage,
   setErrorMessage,
   setSuccessMessage,
 } from "../reducers/notificationReducer";
+import { deletingBlog, likingBlog } from "../reducers/blogReducer";
+import { useNavigate } from "react-router-dom";
+import { Button, Container, Link, Typography } from "@mui/material";
+import Comments from "./Comments";
 
-const Blog = ({ blog, loggedInUsername, blogs }) => {
-  const [visible, setVisible] = useState(false);
+const Blog = ({ blog, loggedInUsername }) => {
+  const blogs = useSelector(({ blogs }) => blogs);
+  const navigate = useNavigate();
   const dispatch = useDispatch();
-
-  const blogStyle = {
-    paddingTop: 10,
-    paddingLeft: 2,
-    border: "solid",
-    borderWidth: 1,
-    marginBottom: 5,
-    listStyleType: "none",
-  };
 
   const deleteBlog = async (blog) => {
     alert(`Remove blog ${blog.title} by ${blog.author}`);
     try {
       dispatch(deletingBlog(blog));
+      navigate("/");
       dispatch(setSuccessMessage(`${blog.title} by ${blog.author} removed`));
       setTimeout(() => {
         dispatch(clearMessage());
@@ -36,46 +31,42 @@ const Blog = ({ blog, loggedInUsername, blogs }) => {
     }
   };
 
+  if (!blog) return null;
+
   const handleLikes = async (id) => {
     const blog = blogs.find((b) => b.id === id);
     const updatedBlog = { ...blog, likes: blog.likes + 1 };
     dispatch(likingBlog(updatedBlog));
   };
 
-  const toggleVisibility = () => {
-    setVisible(!visible);
-  };
-
-  const showWhenVisible = { display: visible ? "" : "none" };
-
   return (
-    <li style={blogStyle} className="blogs">
-      <span className="title">{blog.title}</span>
-      <button onClick={toggleVisibility}>{visible ? "hide" : "view"}</button>
-      <div style={showWhenVisible} className="details">
-        <p className="author" style={{ lineHeight: 0 }}>
-          {blog.author}
-        </p>
-        <p className="url" style={{ lineHeight: 0 }}>
-          {blog.url}
-        </p>
-        <p className="likes" style={{ lineHeight: 0 }}>
-          Likes {blog.likes}{" "}
-          <button onClick={() => handleLikes(blog.id)}>like</button>
-        </p>
+    <Container>
+      <div style={{ padding: "0.3rem" }}>
+        <Typography variant="h3">{blog.title}</Typography>
+        <Typography variant="body1">
+          <Link href={blog.url}>{blog.url}</Link>
+        </Typography>
+        <Typography variant="body1">
+          {blog.likes} likes{" "}
+          <Button variant="outlined" onClick={() => handleLikes(blog.id)}>
+            like
+          </Button>
+        </Typography>
+        <Typography variant="body1">
+          added by <b>{blog.creator.username}</b>
+        </Typography>
         {loggedInUsername === blog.creator.username && (
-          <button
-            style={{
-              borderRadius: 5,
-              background: "lightBlue",
-            }}
+          <Button
+            variant="contained"
+            color="error"
             onClick={() => deleteBlog(blog)}
           >
             remove
-          </button>
+          </Button>
         )}
       </div>
-    </li>
+      <Comments blog={blog} />
+    </Container>
   );
 };
 

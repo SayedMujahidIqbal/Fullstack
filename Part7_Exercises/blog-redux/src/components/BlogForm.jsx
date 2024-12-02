@@ -5,8 +5,10 @@ import { useField } from "../hooks/useField";
 import { createBlog } from "../reducers/blogReducer";
 import Togglable from "./Togglable";
 import { useRef } from "react";
+import { Button, Container, TextField } from "@mui/material";
 
 const BlogForm = () => {
+  const user = JSON.parse(window.localStorage.getItem("loggedBlogappUser"));
   const title = useField("text");
   const author = useField("text");
   const url = useField("text");
@@ -36,22 +38,39 @@ const BlogForm = () => {
     url.reset();
   };
 
+  if (!user) return null;
+
   return (
     <Togglable buttonLabel="create new blog" ref={blogFormRef}>
       <form onSubmit={addBlog}>
-        <div>
-          title:
-          <input {...{ ...title, reset: undefined }} />
+        <div style={{ marginBottom: "0.5rem" }}>
+          <TextField
+            {...{ ...title, reset: undefined }}
+            label="title"
+            style={{ width: "20rem" }}
+          />
         </div>
-        <div>
-          Author:
-          <input {...{ ...author, reset: undefined }} />
+        <div style={{ marginBottom: "0.5rem" }}>
+          <TextField
+            {...{ ...author, reset: undefined }}
+            label="author"
+            style={{ width: "20rem" }}
+          />
         </div>
-        <div>
-          URL:
-          <input {...{ ...url, reset: undefined }} />
+        <div style={{ marginBottom: "0.5rem" }}>
+          <TextField
+            {...{ ...url, reset: undefined }}
+            label="url"
+            style={{ width: "20rem" }}
+          />
         </div>
-        <button type="submit">Add Blog</button>
+        <Button
+          type="submit"
+          variant="contained"
+          style={{ marginBottom: "0.5rem" }}
+        >
+          Add Blog
+        </Button>
       </form>
     </Togglable>
   );
