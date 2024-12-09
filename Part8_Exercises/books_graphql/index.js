@@ -1,6 +1,7 @@
 const { ApolloServer } = require("@apollo/server");
 const { startStandaloneServer } = require("@apollo/server/standalone");
 const { v1: uuid } = require("uuid");
+const { GraphQLError } = require("graphql");
 
 let authors = [
   {
@@ -123,10 +124,14 @@ const resolvers = {
   Query: {
     bookCount: () => books.length,
     authorCount: () => authors.length,
-    allBooks: (root, args) =>
+    allBooks: (root, args) => {
+      if (!args.genre || !args.author) {
+        return books;
+      }
       books.filter(
         (b) => b.genres.includes(args.genre) || b.author === args.author
-      ),
+      );
+    },
     allAuthors: () => authors,
   },
   Author: {
@@ -149,7 +154,12 @@ const resolvers = {
     editAuthor: (root, args) => {
       const author = authors.find((a) => a.name === args.name);
       if (!author) {
-        return null;
+        throw new GraphQLError("Author does not exist", {
+          extensions: {
+            code: "BAD_USER_INPUT",
+            invalidArgs: args.name,
+          },
+        });;
       }
       const updatedAuthor = { ...author, born: args.born };
       authors = authors.map((a) => (a.name === args.name ? updatedAuthor : a));
