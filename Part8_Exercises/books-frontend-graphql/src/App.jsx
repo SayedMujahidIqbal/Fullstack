@@ -2,15 +2,22 @@ import { Link, Route, Routes } from "react-router-dom";
 import Authors from "./components/Authors";
 import Books from "./components/Books";
 import NewBook from "./components/NewBook";
-import { useQuery } from "@apollo/client";
+import { useApolloClient, useQuery } from "@apollo/client";
 import { ALL_AUTHORS, ALL_BOOKS } from "./queries";
 import Notify from "./components/Notify";
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import LoginForm from "./components/LoginForm";
 
 const App = () => {
+  const client = useApolloClient();
+  const [token, setToken] = useState(null);
   const [errorMessage, setErrorMessage] = useState(null);
   const booksResult = useQuery(ALL_BOOKS);
   const authorsResult = useQuery(ALL_AUTHORS);
+
+  useEffect(() => {
+    setToken(localStorage.getItem("bookapp-user"));
+  }, [token]);
 
   if (booksResult.loading || authorsResult.loading) {
     return <div>Loading....</div>;
@@ -23,6 +30,12 @@ const App = () => {
     }, 3000);
   };
 
+  const logout = () => {
+    setToken(null);
+    localStorage.clear();
+    client.resetStore();
+  };
+
   return (
     <div>
       <div>
@@ -32,8 +45,13 @@ const App = () => {
         <Link to="/authors" style={{ paddingRight: "0.5rem" }}>
           authors
         </Link>
-        <Link to="/add-book" style={{ paddingRight: "0.5rem" }}>
-          add book
+        {token && (
+          <Link to="/add-book" style={{ paddingRight: "0.5rem" }}>
+            add book
+          </Link>
+        )}
+        <Link to="/login" onClick={logout}>
+          {token ? "logout" : "login"}
         </Link>
       </div>
       <Notify message={errorMessage} />
@@ -53,6 +71,10 @@ const App = () => {
             }
           />
           <Route path="/add-book" element={<NewBook setError={notify} />} />
+          <Route
+            path="/login"
+            element={<LoginForm setError={notify} setToken={setToken} />}
+          />
         </Routes>
       </div>
     </div>

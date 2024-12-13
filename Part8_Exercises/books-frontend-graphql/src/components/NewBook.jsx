@@ -12,17 +12,28 @@ const NewBook = ({ setError }) => {
   const navigate = useNavigate();
 
   const [addBook] = useMutation(CREATE_BOOK, {
-    refetchQueries: [{ query: ALL_BOOKS }, { query: ALL_AUTHORS }],
     onError: (error) => {
       const messages = error.graphQLErrors.map((e) => e.message).join("\n");
       setError(messages);
+    },
+    update: (cache, response) => {
+      cache.updateQuery({ query: ALL_BOOKS }, ({ allBooks }) => {
+        return {
+          allBooks: allBooks.concat(response.data.addBook),
+        };
+      });
+      cache.updateQuery({ query: ALL_AUTHORS }, ({ allAuthors }) => {
+        return {
+          allAuthors: allAuthors.concat(response.data.addBook.author),
+        };
+      });
     },
   });
 
   const submit = async (event) => {
     event.preventDefault();
 
-    if (title === "" || author === "" || published === "" || genre === "") {
+    if (title === "" || author === "" || published === "" || genres === null) {
       setError("fields cannot be empty");
     } else {
       addBook({
@@ -71,7 +82,9 @@ const NewBook = ({ setError }) => {
         <div>
           <input
             value={genre}
-            onChange={({ target }) => setGenre(target.value)}
+            onChange={({ target }) =>
+              setGenre(target.value.toLocaleLowerCase())
+            }
           />
           <button onClick={addGenre} type="button">
             add genre

@@ -7,7 +7,7 @@ const schema = new mongoose.Schema({
     type: String,
     required: true,
     unique: true,
-    minLength: 4,
+    minLength: 3,
   },
   born: {
     type: Number,

@@ -16,7 +16,12 @@ const schema = new mongoose.Schema({
     type: mongoose.Schema.Types.ObjectId,
     ref: "Author",
   },
-  genres: [{ type: String }],
+  genres: [
+	  { 
+		type: String,
+		lowercase: true
+	  }
+  ],
 });
 
 schema.plugin(uniqueValidator);
