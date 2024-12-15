@@ -1,23 +1,42 @@
+import { useState } from "react";
 import { Link, Route, Routes } from "react-router-dom";
 import Authors from "./components/Authors";
 import Books from "./components/Books";
 import NewBook from "./components/NewBook";
-import { useApolloClient, useQuery } from "@apollo/client";
-import { ALL_AUTHORS, ALL_BOOKS } from "./queries";
+import { useApolloClient, useQuery, useSubscription } from "@apollo/client";
+import { ALL_AUTHORS, ALL_BOOKS, BOOK_ADDED } from "./queries";
 import Notify from "./components/Notify";
-import { useEffect, useState } from "react";
 import LoginForm from "./components/LoginForm";
+
+export const updateCache = (cache, query, addedBook) => {
+  const uniqByName = (a) => {
+    let seen = new Set();
+    return a.filter((item) => {
+      let k = item.title;
+      return seen.has(k) ? false : seen.add(k);
+    });
+  };
+  cache.updateQuery(query, ({ allBooks }) => {
+    return {
+      allBooks: uniqByName(allBooks.concat(addedBook)),
+    };
+  });
+};
 
 const App = () => {
   const client = useApolloClient();
-  const [token, setToken] = useState(null);
+  const [token, setToken] = useState(localStorage.getItem("bookapp-user"));
   const [errorMessage, setErrorMessage] = useState(null);
   const booksResult = useQuery(ALL_BOOKS);
   const authorsResult = useQuery(ALL_AUTHORS);
 
-  useEffect(() => {
-    setToken(localStorage.getItem("bookapp-user"));
-  }, [token]);
+  useSubscription(BOOK_ADDED, {
+    onData: ({ data, client }) => {
+      const addedBook = data.data.bookAdded;
+      notify(`${addedBook.title} added`);
+      updateCache(client.cache, { query: ALL_BOOKS }, addedBook);
+    },
+  });
 
   if (booksResult.loading || authorsResult.loading) {
     return <div>Loading....</div>;

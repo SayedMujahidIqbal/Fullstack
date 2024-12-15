@@ -3,7 +3,7 @@ import { useEffect, useState } from "react";
 import { GET_BOOKS_WITH_GENRE } from "../queries";
 
 const Books = ({ books }) => {
-  const [booksWithGenres, setBooksWithGenres] = useState(books);
+  const [booksWithGenres, setBooksWithGenres] = useState();
   const [genre, setGenre] = useState("");
   let extractGenres = [];
   books.map((b) => b.genres.map((g) => extractGenres.push(g)));
@@ -11,6 +11,10 @@ const Books = ({ books }) => {
   const result = useQuery(GET_BOOKS_WITH_GENRE, {
     variables: { genre: genre },
   });
+
+  useEffect(() => {
+    setBooksWithGenres(books);
+  }, [books]);
 
   useEffect(() => {
     if (result.data) {
@@ -33,7 +37,7 @@ const Books = ({ books }) => {
             <th>author</th>
             <th>published</th>
           </tr>
-          {booksWithGenres.map((a) => (
+          {booksWithGenres?.map((a) => (
             <tr key={a.title}>
               <td>{a.title}</td>
               <td>{a.author.name}</td>
