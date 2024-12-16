@@ -29,7 +29,11 @@ const Books = ({ books }) => {
   return (
     <div>
       <h2>books</h2>
-
+      {genre && (
+        <p>
+          books with <b>{genre}</b>
+        </p>
+      )}
       <table>
         <tbody>
           <tr>

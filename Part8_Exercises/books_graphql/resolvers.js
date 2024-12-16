@@ -31,7 +31,7 @@ const resolvers = {
         }
       }
     },
-    allAuthors: async () => Author.find({}).populate("books"),
+    allAuthors: async () => Author.find({}).populate("booksCount"),
   },
   Mutation: {
     addBook: async (root, args, { currentUser }) => {
@@ -55,7 +55,11 @@ const resolvers = {
       const book = new Book({ ...args });
       if (!author) {
         try {
-          const newAuthor = new Author({ name: args.author, born: null });
+          const newAuthor = new Author({
+            name: args.author,
+            born: null,
+            booksCount: book._id,
+          });
           await newAuthor.save();
           const newAddedAuthor = await Author.findOne({ name: args.author });
           book.author = newAddedAuthor._id;
@@ -72,6 +76,10 @@ const resolvers = {
       } else {
         book.author = author._id;
         await book.save();
+        await Author.updateOne(
+          { _id: author.id },
+          { $push: { booksCount: book._id } }
+        );
       }
       pubsub.publish("BOOK_ADDED", {
         bookAdded: Book.populate(book, { path: "author" }),
@@ -95,9 +103,8 @@ const resolvers = {
           },
         });
       }
-      author.born = Number(args.born);
       try {
-        author.born = Number(args.born);
+        author.born = args.born;
         await author.save();
       } catch (error) {
         throw new GraphQLError("Setting Birth year failed", {

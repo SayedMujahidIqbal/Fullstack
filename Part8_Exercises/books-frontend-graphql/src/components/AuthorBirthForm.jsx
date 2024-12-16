@@ -21,7 +21,7 @@ const AuthorBirthForm = ({ setError }) => {
     if (name === "" || born === "") {
       setError("fields cannot be empty");
     } else {
-      setYear({ variables: { name, born } });
+      setYear({ variables: { name, born: Number(born) } });
       setName("");
       setBorn("");
     }

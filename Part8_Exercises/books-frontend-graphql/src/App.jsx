@@ -21,6 +21,14 @@ export const updateCache = (cache, query, addedBook) => {
       allBooks: uniqByName(allBooks.concat(addedBook)),
     };
   });
+  cache.updateQuery({ query: ALL_AUTHORS }, ({ allAuthors }) => {
+    return {
+      allAuthors: allAuthors.concat({
+        name: addedBook.author.name,
+        born: null,
+      }),
+    };
+  });
 };
 
 const App = () => {
@@ -46,7 +54,7 @@ const App = () => {
     setErrorMessage(message);
     setTimeout(() => {
       setErrorMessage(null);
-    }, 3000);
+    }, 5000);
   };
 
   const logout = () => {

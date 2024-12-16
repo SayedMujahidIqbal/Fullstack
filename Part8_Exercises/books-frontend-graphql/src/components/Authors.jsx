@@ -11,11 +11,11 @@ const Authors = ({ authors, setError }) => {
             <th>born</th>
             <th>books</th>
           </tr>
-          {authors.map((a) => (
+          {authors?.map((a) => (
             <tr key={a.name}>
               <td>{a.name}</td>
               <td>{a.born}</td>
-              <td>{a.booksCount}</td>
+              <td>{a.booksCount?.length}</td>
             </tr>
           ))}
         </tbody>

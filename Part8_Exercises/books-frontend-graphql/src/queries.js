@@ -4,7 +4,9 @@ const AUTHOR_DETAILS = gql`
   fragment AuthorDetails on Author {
     name
     born
-    booksCount
+    booksCount {
+      title
+    }
   }
 `;
 
@@ -12,12 +14,12 @@ const BOOK_DETAILS = gql`
   fragment BookDetails on Book {
     title
     author {
-      ...AuthorDetails
+      name
+      born
     }
     published
     genres
   }
-  ${AUTHOR_DETAILS}
 `;
 
 export const ALL_BOOKS = gql`
@@ -55,7 +57,9 @@ export const CREATE_BOOK = gql`
       author {
         name
         born
-        booksCount
+        booksCount {
+          title
+        }
       }
       published
       genres
@@ -64,11 +68,13 @@ export const CREATE_BOOK = gql`
 `;
 
 export const SET_BIRTHYEAR = gql`
-  mutation editAuthor($name: String!, $born: String!) {
+  mutation editAuthor($name: String!, $born: Int!) {
     editAuthor(name: $name, born: $born) {
       name
       born
-      booksCount
+      booksCount {
+        title
+      }
     }
   }
 `;
