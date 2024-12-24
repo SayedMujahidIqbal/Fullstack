@@ -5,9 +5,9 @@ interface bmiValues {
   target: number;
 }
 
-const parseArguments = (args: string[]) => {
+const parseArguments = (args: string[]): bmiValues => {
   if (args.length < 4) throw new Error("Not many arguments");
-  let hours: number[] = [];
+  const hours: number[] = [];
   for (let index = 2; index < args.length - 1; index++) {
     hours.push(Number(args[index]));
   }
@@ -32,7 +32,7 @@ interface exerciseResult {
   average: number;
 }
 
-const calculateExercises = (
+export const calculateExercises = (
   exerciseHours: number[],
   target: number
 ): exerciseResult => {
