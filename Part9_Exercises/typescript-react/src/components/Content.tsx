@@ -1,14 +1,8 @@
-interface Content {
-  partName: string;
-  exercises: number;
-}
+import { CoursePart } from "../types";
+import Part from "./Part";
 
-const Content = (props: Content) => {
-  return (
-    <p>
-      {props.partName} {props.exercises}
-    </p>
-  );
+const Content = (props: CoursePart) => {
+  return <Part {...props} />;
 };
 
 export default Content;

@@ -1,8 +1,7 @@
-interface Total {
-  totalExercises: number;
-}
-const Total = (props: Total) => {
-  return <p>{props.totalExercises}</p>;
+import { TotalType } from "../types";
+
+const Total = (props: TotalType) => {
+  return <p> Number of exercises {props.totalExercises}</p>;
 };
 
 export default Total;
