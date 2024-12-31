@@ -2,19 +2,20 @@ import { z } from "zod";
 import { NewEntrySchema } from "./utils";
 
 export type NonSensitiveDiagnoseEntry = Omit<DiagnosisEntry, "latin">;
-export type NonSensitivePatientEntry = Omit<
-  PatientEntry,
-  "dateOfBirth" | "ssn"
->;
+export type NonSensitivePatientEntry = Omit<PatientEntry, "ssn" | "entries">;
 export type NewPatientEntry = z.infer<typeof NewEntrySchema>;
+
+// eslint-disable-next-line @typescript-eslint/no-empty-object-type
+export interface Entry {}
 
 export interface PatientEntry {
   id: string;
   name: string;
-  dateOfBirth?: string;
+  dateOfBirth: string;
   ssn?: string;
   gender: Gender;
   occupation: string;
+  entries?: Entry[];
 }
 
 export interface DiagnosisEntry {
